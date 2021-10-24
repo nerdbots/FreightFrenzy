@@ -444,7 +444,7 @@ public class PurePursuitRobotMovement6_Quad2 {
         lookaheadX = (distance + 40) * Math.cos(fieldAngleRad) + robotLocationX;
         lookAheadY = (distance + 40) * Math.sin(fieldAngleRad) + robotLocationY;
 
-        double [] visionPurePursuitPoints = {robotLocationX, robotLocationY, targetX, targetY, lookaheadX, lookAheadY};
+        double [] visionPurePursuitPoints = {robotLocationX, robotLocationY, targetX, targetY, lookaheadX, lookAheadY, fieldAngle};
         if (debugFlag) {
                 RobotLog.d("calculateTargetPoint - fieldAngle %f, fieldAngleRad %f, robotLocationX %f, robotLocationY %f, targetX %f, targetY %f, lookaheadX %f, lookaheadY %f",
                         fieldAngle, fieldAngleRad, robotLocationX, robotLocationY, targetX, targetY, lookaheadX, lookAheadY);

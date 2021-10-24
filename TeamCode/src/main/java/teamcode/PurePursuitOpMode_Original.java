@@ -46,61 +46,81 @@ public class PurePursuitOpMode_Original extends LinearOpMode {
 
         waitForStart();
 
-        myPurePursuitRobotMovement6.runShoot();
+        //myPurePursuitRobotMovement6.runShoot();
 
         //myDetectObjects.runDetectShoot();
 
         if (purePursuitPath == 4) {
             //First Path to the Square 4
+
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(0, 0, 1.0, 0.3, 40, 0, 0.3));
-            allPoints.add(new CurvePoint(-3, 40, 1.0, 0.3, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(-11, 113, 1.0, 0.3, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(-11, 171, 1.0, 0.3, 40, 180, 0.3));
+            allPoints.add(new CurvePoint(0, 0, 0.4, 0.3, 40, 0, 0.3));
+            allPoints.add(new CurvePoint(12, 24, 0.4, 0.3, 40, 180, 0.3));
+            allPoints.add(new CurvePoint(26, 60, 0.4, 0.3, 40, 180, 0.3));
 
-            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 40, 90, 3);
+            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 15, 90, 3);
 
-//        Lower arm and release wobble goal
-            myPurePursuitRobotMovement6.beginningDown();
 
-            allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-11, 113, 1.0, 0.4, 35, 0, 0.3));
-            allPoints.add(new CurvePoint(19, 100, 1.0, 0.4, 35, 180, 0.3));
-            allPoints.add(new CurvePoint(21, 23, 1.0, 0.4, 35, 180, 0.3));
-            allPoints.add(new CurvePoint(21, -44, 1.0, 0.3, 35, 180, 0.3));
 
-            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 35, 225, 1);
 
-//        Grab wobble goal and raise arm
-            myPurePursuitRobotMovement6.pickupWobble();
+//
+//            allPoints.add(new CurvePoint(0, 18, 0.4, 0.3, 40, 0, 0.3));
+//            allPoints.add(new CurvePoint(12, 24, 0.4, 0.3, 40, 180, 0.3));
+//            allPoints.add(new CurvePoint(48, 42, 0.4, 0.3, 40, 180, 0.3));
+//
+//            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 8, 45, 3);
 
-            allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(21, 23, 1.0, 0.4, 40, 0, 0.3));
-            allPoints.add(new CurvePoint(24, 60, 1.0, 0.4, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(-8, 104, 1.0, 0.4, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(-16, 160, 1.0, 0.3, 40, 180, 0.3));
 
-            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 35, 90, 3);
 
-//        Lower arm and release wobble goal
-            myPurePursuitRobotMovement6.setDownWobble();
-
-            allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-8, 104, 1.0, 0.4, 40, 0, 0.3));
-            allPoints.add(new CurvePoint(4, 60, 1.0, 0.4, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(4, 10, 1.0, 0.4, 40, 180, 0.3));
-
-            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 30, 90, 2);
-
-            myPurePursuitRobotMovement6.pickupWobble();
-
-            allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(6, 60, 0.6, 0.4, 35, 0, 0.3));
-            allPoints.add(new CurvePoint(6, 70, 0.6, 0.4, 35, 180, 0.3));
-            allPoints.add(new CurvePoint(6, 130, 0.6, 0.4, 35, 180, 0.3));
-
-            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 7, 90, 4);
-
+//            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(0, 0, 1.0, 0.3, 40, 0, 0.3));
+//            allPoints.add(new CurvePoint(-3, 40, 1.0, 0.3, 40, 180, 0.3));
+//            allPoints.add(new CurvePoint(-11, 113, 1.0, 0.3, 40, 180, 0.3));
+//            allPoints.add(new CurvePoint(-11, 171, 1.0, 0.3, 40, 180, 0.3));
+//
+//            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 40, 90, 3);
+//
+////        Lower arm and release wobble goal
+//            myPurePursuitRobotMovement6.beginningDown();
+//
+//            allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(-11, 113, 1.0, 0.4, 35, 0, 0.3));
+//            allPoints.add(new CurvePoint(19, 100, 1.0, 0.4, 35, 180, 0.3));
+//            allPoints.add(new CurvePoint(21, 23, 1.0, 0.4, 35, 180, 0.3));
+//            allPoints.add(new CurvePoint(21, -44, 1.0, 0.3, 35, 180, 0.3));
+//
+//            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 35, 225, 1);
+//
+////        Grab wobble goal and raise arm
+//            myPurePursuitRobotMovement6.pickupWobble();
+//
+//            allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(21, 23, 1.0, 0.4, 40, 0, 0.3));
+//            allPoints.add(new CurvePoint(24, 60, 1.0, 0.4, 40, 180, 0.3));
+//            allPoints.add(new CurvePoint(-8, 104, 1.0, 0.4, 40, 180, 0.3));
+//            allPoints.add(new CurvePoint(-16, 160, 1.0, 0.3, 40, 180, 0.3));
+//
+//            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 35, 90, 3);
+//
+////        Lower arm and release wobble goal
+//            myPurePursuitRobotMovement6.setDownWobble();
+//
+//            allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(-8, 104, 1.0, 0.4, 40, 0, 0.3));
+//            allPoints.add(new CurvePoint(4, 60, 1.0, 0.4, 40, 180, 0.3));
+//            allPoints.add(new CurvePoint(4, 10, 1.0, 0.4, 40, 180, 0.3));
+//
+//            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 30, 90, 2);
+//
+//            myPurePursuitRobotMovement6.pickupWobble();
+//
+//            allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(6, 60, 0.6, 0.4, 35, 0, 0.3));
+//            allPoints.add(new CurvePoint(6, 70, 0.6, 0.4, 35, 180, 0.3));
+//            allPoints.add(new CurvePoint(6, 130, 0.6, 0.4, 35, 180, 0.3));
+//
+//            myPurePursuitRobotMovement6.followCurve(allPoints, 90, 7, 90, 4);
+//
 
 //        sleep(1000);
 
