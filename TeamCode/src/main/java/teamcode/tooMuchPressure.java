@@ -34,6 +34,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -73,6 +74,12 @@ public class tooMuchPressure extends LinearOpMode {
     private DcMotor frontRightMotor;
     private DcMotor rearLeftMotor;
     private DcMotor rearRightMotor;
+
+    private DcMotor frontEncoder;
+    private DcMotor rightEncoder;
+    private DcMotor leftEncoder;
+    private DcMotor backEncoder;
+
     Orientation angles;
     Acceleration gravity;
 
@@ -106,6 +113,47 @@ public class tooMuchPressure extends LinearOpMode {
 
     double xPosition = 0;
     double yPosition = 0;
+
+    double robotRotNewOpt = 0;
+    double robotRotOldOpt = 0;
+    double robotRotOpt = 0;
+    //double robotRotDisplacementOptF = 0;
+    double robotXdisplacementOpt = 0;
+    double robotYdisplacementOpt = 0;
+    double robotVectorByOdoOpt = 0;
+    double robotVectorMagOpt = 0;
+    double robotFieldAngleOpt = 0;
+    double robotXdisplacementOptTot = 0;
+    double robotYdisplacementOptTot = 0;
+    double frontPositionOptical = 0;
+    double rightPositionOptical = 0;
+    double leftPositionOptical = 0;
+    double backPositionOptical = 0;
+    double [] robotPositionXYOptical;
+    double frontDisplacementOld = 0;
+    double leftDisplacementOld = 0;
+    double rightDisplacementOld = 0;
+    double rearDisplacementOld = 0;
+    double frontDispNoRotTotOpt = 0;
+    double leftDispNoRotTotOpt = 0;
+    double rightDispNoRotTotOpt = 0;
+    double rearDispNoRotTotOpt = 0;
+    double omniDriveFactorOpt = 0;
+    double xPositionOpt = 0;
+    double yPositionOpt = 0;
+    double flme;
+    double frme;
+    double rlme;
+    double rrme;
+    double flme_old = 0;
+    double frme_old = 0;
+    double rlme_old = 0;
+    double rrme_old = 0;
+    double flme_speed;
+    double frme_speed;
+    double rlme_speed;
+    double rrme_speed;
+
 
     double robotRot = 0;
     double robotRotNew = 0;
@@ -171,6 +219,11 @@ public class tooMuchPressure extends LinearOpMode {
         rearLeftMotor = hardwareMap.get(DcMotor.class, "Rear_Left_Motor");
         rearRightMotor = hardwareMap.get(DcMotor.class, "Rear_Right_Motor");
 
+        //frontEncoder = hardwareMap.get(DcMotor.class, "Front");
+        rightEncoder = hardwareMap.get(DcMotor.class, "Right");
+        leftEncoder = hardwareMap.get(DcMotor.class, "Left");
+        backEncoder = hardwareMap.get(DcMotor.class, "Back");
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode                = BNO055IMU.SensorMode.IMU;
@@ -211,10 +264,33 @@ public class tooMuchPressure extends LinearOpMode {
         displacementX = 0;
         displacementY = 0;
 
-        targetPositionFLM = frontLeftMotor.getCurrentPosition() + 500;
-        targetPositionFRM = frontRightMotor.getCurrentPosition() + 500;
-        targetPositionRLM = rearLeftMotor.getCurrentPosition() + 500;
-        targetPositionRRM = rearRightMotor.getCurrentPosition() + 500;
+        //frontEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //this.frontEncoder.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //this.frontEncoder.setDirection(DcMotorEx.Direction.REVERSE);
+        rightEncoder.setDirection(DcMotor.Direction.REVERSE);
+        leftEncoder.setDirection(DcMotor.Direction.REVERSE);
+        backEncoder.setDirection(DcMotor.Direction.FORWARD);
+
+        xPositionOpt = 0;
+        yPositionOpt = 0;
+
+        targetPositionFLM = frontLeftMotor.getCurrentPosition() - 2000;
+        targetPositionFRM = frontRightMotor.getCurrentPosition() + 2000;
+        targetPositionRLM = rearLeftMotor.getCurrentPosition() - 2000;
+        targetPositionRRM = rearRightMotor.getCurrentPosition() + 2000;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -242,122 +318,41 @@ public class tooMuchPressure extends LinearOpMode {
             rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            rearRightMotor.setPower(0.4);
-            frontLeftMotor.setPower(0.4);
-            frontRightMotor.setPower(0.4);
-            rearLeftMotor.setPower(0.4);
+            rearRightMotor.setPower(1.0);
+            frontLeftMotor.setPower(-1.0);
+            frontRightMotor.setPower(1.0);
+            rearLeftMotor.setPower(-1.0);
 
+            robotPositionXY = findDisplacementOptical();
 
+            xPosition += robotPositionXY[4];
+            yPosition += robotPositionXY[5];
 
-
-//        if (deltaTime < 6) {
-//                robotTargetAngle = 135;
-//                robotTargetSpeed = 0.5;
-//                zPower = 0.0;
-//            }
-////        else if (deltaTime < 4) {
-////                robotTargetAngle = 90;
-////                robotTargetSpeed = 0.5;
-////                zPower = 0.0;
-////            }
-////        else if (deltaTime < 6) {
-////                robotTargetAngle = 180;
-////                robotTargetSpeed = 0.5;
-////                zPower = 0.0;
-////            }
-////        else if (deltaTime < 8){
-////                robotTargetAngle = -45;
-////                robotTargetSpeed = 0.5;
-////                zPower = 0.0;
-////            }
-//        else {
-//            robotTargetSpeed = 0.0;
-//            zPower = 0.0;
-//            }
-//        robotAngleToTarget = ((robotTargetAngle - 45) - getAngle());
-//
-//        //robotTargetSpeed = 0.5;
-//
-//        xPower = Math.cos(robotAngleToTarget * 3.14 / 180) * robotTargetSpeed;
-//        yPower = Math.sin(robotAngleToTarget * 3.14 / 180) * robotTargetSpeed;
-//
-//        //Second calculate motor speeds for angular (z) motion
-//
-//        robotCircumference = 2 * Math.PI * robotRadius;
-//        robotWheelCircumference = 2 * Math.PI * robotWheelRadius;
-//        wheelRotPerRobotRot = robotCircumference / robotWheelCircumference;
-
-            //zPower = 0.2;
-
-//        frontLeftMotorPower = zPower + xPower;
-//        frontRightMotorPower = zPower + yPower;
-//        rearLeftMotorPower = zPower + yPower;
-//        rearRightMotorPower = -zPower - xPower;
-
-//        frontLeftMotorPower = -xPower + zPower;
-//        rearRightMotorPower = xPower + zPower;
-//        frontRightMotorPower = yPower + zPower;
-//        rearLeftMotorPower = -yPower + zPower;
-//
-//        rearRightMotor.setPower(rearRightMotorPower);
-//        frontLeftMotor.setPower(frontLeftMotorPower);
-//        frontRightMotor.setPower(frontRightMotorPower);
-//        rearLeftMotor.setPower(rearLeftMotorPower);
-
-//        flCounts = frontLeftMotor.getCurrentPosition();
-//        frCounts = frontRightMotor.getCurrentPosition();
-//        rlCounts = rearLeftMotor.getCurrentPosition();
-//        rrCounts = rearRightMotor.getCurrentPosition();
-
-            robotPositionXY = findDisplacement(displacementX, displacementY);
-
-            xPosition += robotPositionXY[0];
-            yPosition += robotPositionXY[1];
-
-//            if (debugFlag) {
-//                RobotLog.d("FieldCentricInAutonTurn3Odo1 - timeSinceStart %f, robotTargetAngle %f, xPower %f, yPower %f , zPower %f, frontLeftMotorPower %f, rearRightMotorPower %f , frontRightMotorPower %f, rearLeftMotorPower %f, frontLeftMotorTicks %f, rearRightMotorTicks %f , frontRightMotorTicks %f , rearLeftMotorTicks %f, xPosition %f, yPosition %f, robotRot %f, robotRotDisplacement %f, robotAngleToTarget %f, robotVectorByOdoF %f, robotVectorByOdoR %f, frontVectorMag %f, rearVectorMag %f",
-//                        deltaTime, robotTargetAngle, xPower, yPower, zPower, frontLeftMotorPower, rearRightMotorPower, frontRightMotorPower, rearLeftMotorPower, lfDisplacement, rrDisplacement, rfDisplacement, lrDisplacement, xPosition, yPosition, robotRot, robotRotDisplacement, robotAngleToTarget, robotVectorByOdoF, robotVectorByOdoR, frontVectorMag, rearVectorMag);
-//            }
+            flme = frontLeftMotor.getCurrentPosition();
+            frme = frontRightMotor.getCurrentPosition();
+            rlme = rearLeftMotor.getCurrentPosition();
+            rrme = rearRightMotor.getCurrentPosition();
+            flme_speed = (flme - flme_old) / loopTime;
+            frme_speed = (frme - frme_old) / loopTime;
+            rlme_speed = (rlme - rlme_old) / loopTime;
+            rrme_speed = (rrme - rrme_old) / loopTime;
+            flme_old = flme;
+            frme_old = frme;
+            rlme_old = rlme;
+            rrme_old = rrme;
 
             if (debugFlag) {
-                RobotLog.d("FieldCentricInAutonTurn3Odo1 - timeSinceStart %f, robotTargetAngle %f, lfDisplacement %f, lfDisplacementNew %f, lfDispNoRot %f, rrDisplacement %f, rrDisplacementNew %f, rrDispNoRot %f, rfDisplacement %f, rfDisplacementNew %f, rfDispNoRot %f, lrDisplacement %f, lrDisplacementNew %f, lrDispNoRot %f, xPosition %f, yPosition %f, robotRot %f, robotRotDisplacement %f, robotAngleToTarget %f, robotVectorByOdo %f, robotVectorMag %f, robotFieldAngle %f, robotFieldPositionX %f, robotFieldPositionY %f, robotXdisplacement %f, robotYdisplacement %f",
-                        deltaTime, robotTargetAngle, lfDisplacement, lfDisplacementNew, lfDispNoRot, rrDisplacement, rrDisplacementNew, rrDispNoRot, rfDisplacement, rfDisplacementNew, rfDispNoRot, lrDisplacement, lrDisplacementNew, lrDispNoRot, xPosition, yPosition, robotRot, robotRotDisplacement, robotAngleToTarget, robotVectorByOdo, robotVectorMag, robotFieldAngle, robotFieldPositionX, robotFieldPositionY, robotXdisplacement, robotYdisplacement);
+                RobotLog.d("tooMuchPressure - timeSinceStart %f, robotAngle %f, xPosition %f, yPosition %f, rightPositionOptical %f, leftPositionOptical %f, backPositionOptical %f, flme %f, flme_speed %f, frme %f, frme_speed %f,  rlme %f, rlme_speed %f,  rrme %f, rrme_speed %f",
+                        deltaTime, robotRotNewOpt, xPosition, yPosition, rightPositionOptical, leftPositionOptical, backPositionOptical, flme, flme_speed, frme, frme_speed, rlme, rlme_speed, rrme, rrme_speed);
             }
-
-//            if (debugFlag) {
-//                RobotLog.d("FieldCentricInAutonTurn3Odo1 FindDisplacement - robotRotNew %f, robotRot %f, robotRotOld %f, robotRotDisplacement %f, rfDisplacement %f, lfDisplacement %f, lrDisplacement %f, rrDisplacement %f, lfDispNoRot %f, rrDispNoRot %f, rfDispNoRot %f, lrDispNoRot %f, robotVectorByOdoF %f, robotVectorByOdoR %f, frontVectorMag %f, rearVectorMag %f, frontDisplacementX %f, frontDisplacementY %f, rearDisplacementX %f, rearDisplacementY %f",
-//                        robotRotNew, robotRot, robotRotOld, robotRotDisplacement, rfDisplacement, lfDisplacement, lrDisplacement, rrDisplacement, lfDispNoRot, rrDispNoRot, rfDispNoRot, lrDispNoRot, robotVectorByOdoF, robotVectorByOdoR, frontVectorMag, rearVectorMag, frontDisplacementX, frontDisplacementY, rearDisplacementX, rearDisplacementY);
-//            }
-//
-//            final String funcName = "fieldDisplacementXY";
-//            if (debugFlag) {
-//                RobotLog.d("FieldCentricInAutonTurn3Odo1b - field displacement : %s |displacmentX | displacementY", funcName);
-//                RobotLog.d("FieldCentricInAutonTurn3Odo1b - field displacement : %s |%f|%f", funcName,robotPositionXY[0],robotPositionXY[1]);
-//            }
-
-//            if (debugFlag)
-//                RobotLog.d ("FieldCentricInAutonTurn3Odo1 - xPower = %f, yPower = %f , zPower %f", xPower, yPower, zPower);
-//            if (debugFlag)
-//                RobotLog.d ("FieldCentricInAutonTurn3Odo1 - frontLeftMotorPower = %f, rearRightMotorPower = %f , frontRightMotorPower %f , rearLeftMotorPower %f", frontLeftMotorPower, rearRightMotorPower, frontRightMotorPower, rearLeftMotorPower);
-//            if (debugFlag)
-//                RobotLog.d ("FieldCentricInAutonTurn3Odo1 - frontLeftMotorTicks = %f, rearRightMotorTicks = %f , frontRightMotorTicks %f , rearLeftMotorTicks %f", flCounts, rrCounts, frCounts, rlCounts);
-//            if (debugFlag)
-//                RobotLog.d ("FieldCentricInAutonTurn3Odo1 - xDisplacement = %f, yDisplacement = %f", xDisplacement, yDisplacement);
-//            if (debugFlag)
-//                RobotLog.d ("FieldCentricInAutonTurn3Odo1 - Time = %f, Time Since Start = %f , Loop Time %f", currentTime, deltaTime, loopTime);
-//            if (debugFlag)
-//                RobotLog.d ("FieldCentricInAutonTurn3Odo1 - Robot Target Angle = %f, Robot Angle to Target = %f , Target Speed %f", robotTargetAngle, robotAngleToTarget, robotTargetSpeed);
-
-
 
             //robotTargetAngle = robotTargetAngle + 1;
 
             telemetry.addData("xDiplacement", xPosition);
             telemetry.addData("yDisplacement", yPosition);
-            telemetry.addData("LF", lfDisplacementNew);
-            telemetry.addData("RF", rfDisplacementNew);
-            telemetry.addData("LR", lrDisplacementNew);
-            telemetry.addData("RR", rrDisplacementNew);
+            telemetry.addData("Right", rightPositionOptical);
+            telemetry.addData("Left", leftPositionOptical);
+            telemetry.addData("Back", backPositionOptical);
             telemetry.update();
 
         }
@@ -367,12 +362,11 @@ public class tooMuchPressure extends LinearOpMode {
         rearLeftMotor.setPower(0);
         rearRightMotor.setPower(0);
 
-        telemetry.addData("xDiplacement", robotPositionXY[0]);
-        telemetry.addData("yDisplacement", robotPositionXY[1]);
-        telemetry.addData("LF", lfDisplacementNew);
-        telemetry.addData("RF", rfDisplacementNew);
-        telemetry.addData("LR", lrDisplacementNew);
-        telemetry.addData("RR", rrDisplacementNew);
+        telemetry.addData("xDiplacement", xPosition);
+        telemetry.addData("yDisplacement", yPosition);
+        telemetry.addData("Right", rightPositionOptical);
+        telemetry.addData("Left", leftPositionOptical);
+        telemetry.addData("Back", backPositionOptical);
         telemetry.update();
 
     }
@@ -401,6 +395,104 @@ public class tooMuchPressure extends LinearOpMode {
         lastAngles = angles;
 
         return robotAngleToField;
+    }
+
+    private double [] findDisplacementOptical(){
+
+        //First, determine the robot z movement, so encoder ticks caused by z movement can be removed from x, y movement
+        robotRotNewOpt = getAngle();
+        robotRotOpt = robotRotNewOpt - robotRotOldOpt;
+        robotRotOldOpt = robotRotNewOpt;
+
+        //robot rotation (each loop) expressed in motor ticks (robot angle, ticks per degree robot rotation...determined through testing for each encoder wheel).
+        //double robotRotDisplacementOptFront = robotRotOpt * 0; //21.390 ticks per degree of robot rotation
+        double robotRotDisplacementOptRight = robotRotOpt * 40.554; //21.085each wheel is mounted slightly different on the bot
+        double robotRotDisplacementOptLeft = robotRotOpt * 46.368; //21.318
+        double robotRotDisplacementOptBack = robotRotOpt * 10.152; //21.093
+
+        //measure encoder position
+        //frontPositionOptical = frontEncoder.getCurrentPosition();
+        frontPositionOptical = 0;
+        rightPositionOptical = rightEncoder.getCurrentPosition();
+        leftPositionOptical = leftEncoder.getCurrentPosition();
+        backPositionOptical = backEncoder.getCurrentPosition();
+
+        //encoder ticks for each sensor, each loop
+        //double frontDisplacement = frontPositionOptical - frontDisplacementOld;
+        double leftDisplacement = leftPositionOptical - leftDisplacementOld;
+        double rightDisplacement = rightPositionOptical - rightDisplacementOld;
+        double rearDisplacement = backPositionOptical - rearDisplacementOld;
+
+        frontDisplacementOld = frontPositionOptical;
+        leftDisplacementOld = leftPositionOptical;
+        rightDisplacementOld = rightPositionOptical;
+        rearDisplacementOld = backPositionOptical;
+
+        //Now, remove the ticks caused by z movement from the total encoder count, each loop
+        //double frontDispNoRot = frontDisplacement - robotRotDisplacementOptFront;
+        double leftDispNoRot = leftDisplacement - robotRotDisplacementOptRight;
+        double rightDispNoRot = rightDisplacement - robotRotDisplacementOptLeft;
+        double rearDispNoRot = rearDisplacement - robotRotDisplacementOptBack;
+
+        //This section was created for debugging
+        //frontDispNoRotTotOpt += frontDispNoRot;
+        leftDispNoRotTotOpt += leftDispNoRot;
+        rightDispNoRotTotOpt += rightDispNoRot;
+        rearDispNoRotTotOpt += rearDispNoRot;
+
+        //The optical encoders are mounted inline to the robot preferred direction, so we can just use robot angle to target...difference between robot target angle and gyro angle
+//        omniDriveAngle = robotAngleToTarget + 45;
+
+        //Determine the omni-Drive wheel effective gear ratio
+        if (Math.abs(Math.cos(robotAngleToTarget * Math.PI / 180)) > 0.707) {
+            omniDriveFactorOpt = Math.abs(Math.cos(robotAngleToTarget * Math.PI / 180));
+        }
+        else if (Math.abs(Math.sin(robotAngleToTarget * Math.PI / 180)) > 0.707) {
+            omniDriveFactorOpt = Math.abs(Math.sin(robotAngleToTarget * Math.PI / 180));
+        }
+        else {
+            omniDriveFactorOpt = 1.0;
+        }
+
+        //calculate X displacement, and convert ticks to inches (2.362 = wheel diameter inches, 1440 = ticks per wheel rot), and account for robot angle and omni wheel effect
+//        robotXdisplacementOpt = ((-frontDispNoRot + rearDispNoRot) / 2) * ((2.362 * Math.PI) / 8192);
+        robotXdisplacementOpt = rearDispNoRot * ((2.362 * 1.01 * Math.PI) / 8192); //added 2% error factor to improve accuracy.  Maybe the wheels are bigger than 60mm
+//        robotXdisplacementOpt = ((-frontDispNoRot + rearDispNoRot) / 2) * ((2.362 * Math.PI) / 1440) / omniDriveFactorOpt;
+        //robotXdisplacementOptTot = ((rightDispNoRotTotOpt + leftDispNoRotTotOpt) / 2 + (-frontDispNoRotTotOpt + rearDispNoRotTotOpt) / 2) * ((2.362 * 1.01 * Math.PI) / 8192);
+        //calculate Y displacement, and convert ticks to inches (2.362 = wheel diameter inches, 1440 = ticks per wheel rot), and account for robot angle and omni wheel effect
+        robotYdisplacementOpt = ((rightDispNoRot - leftDispNoRot) / 2) * ((2.362 * 1.01 * Math.PI) / 8192);
+//        robotYdisplacementOpt = ((rightDispNoRot - leftDispNoRot) / 2) * ((2.362 * Math.PI) / 1440) / omniDriveFactorOpt;
+        //robotYdisplacementOptTot = (((rightDispNoRotTotOpt - leftDispNoRotTotOpt) / 2) + ((frontDispNoRotTotOpt + rearDispNoRotTotOpt) / 2)) * ((2.362 * 1.01 * Math.PI) / 8192);
+
+        //Using inverse kinematics, calculate the robot driving direction, from the encoder measurements
+        robotVectorByOdoOpt = Math.atan2(robotYdisplacementOpt, robotXdisplacementOpt) * 180 / Math.PI;
+
+        //Now that we know the robot driving direction, calculate the driving distance, each loop
+        robotVectorMagOpt = Math.sqrt((robotXdisplacementOpt * robotXdisplacementOpt) + (robotYdisplacementOpt * robotYdisplacementOpt));
+
+        //The calculated robot vector is the direction in field centric.  Adding the robot gyro angle was an error.
+        robotFieldAngleOpt = (robotVectorByOdoOpt + getAngle());
+        //robotFieldAngleOpt = robotVectorByOdoOpt;
+
+        //Now we know the driving direction and distance for each loop, use forward kinematics calculation to determine x, y movement, each loop
+        double robotFieldPositionXOpt = robotVectorMagOpt * Math.cos(robotFieldAngleOpt * Math.PI / 180);  //field position in inches
+        double robotFieldPositionYOpt = robotVectorMagOpt * Math.sin(robotFieldAngleOpt * Math.PI / 180);  //field position in inches
+
+        //Add each x, y loop calculation, to track the robot location on the field
+        xPositionOpt += robotFieldPositionXOpt;
+        yPositionOpt += robotFieldPositionYOpt;
+
+//        if (debugFlag) {
+//            RobotLog.d("findDisplacementOptical - runTime %f, deltaTime %f, leftDispNoRot %f, rightDispNoRot %f, rearDispNoRot %f, xPositionOptical %f, yPositionOptical %f, xPower %f, yPower %f, zPower %f, robotRotNewOpt %f, robotVectorByOdoOpt %f, robotFieldAngleOpt %f",
+//                    currentTime, loopTime, leftDispNoRot, rightDispNoRot, rearDispNoRot, xPositionOpt, yPositionOpt, xPower, yPower, zPower, robotRotNewOpt, robotVectorByOdoOpt, robotFieldAngleOpt);
+//
+//        }
+
+        //Store the encoder positions and x, y locations in an array and return the values
+        double [] positionOptical = {frontPositionOptical, rightPositionOptical, leftPositionOptical, backPositionOptical, xPositionOpt, yPositionOpt, robotVectorByOdoOpt};
+        return positionOptical;
+
+
     }
 
     public double [] findDisplacement(double displacementX, double displacementY){
@@ -471,38 +563,4 @@ public class tooMuchPressure extends LinearOpMode {
 
     }
 
-    //Function to find out the Robot travel distance in Y direction.
-
-
-//    double findYDisplacement(){
-//
-//        robotRotNew = getAngle();
-//        robotRot = robotRotNew - robotRotOld;
-//        robotRotOld = robotRotNew;
-//
-//        robotRotDisplacement = robotRot * (19.625/2) *(560 / (Math.PI * 3.543));
-//
-//        rfDisplacement = frontRightMotor.getCurrentPosition();
-//        lfDisplacement = frontLeftMotor.getCurrentPosition();
-//        lrDisplacement = rearLeftMotor.getCurrentPosition();
-//        rrDisplacement = rearRightMotor.getCurrentPosition();
-//
-//        robotVectorByOdoF = Math.atan2((rfDisplacement - robotRotDisplacement), (lfDisplacement - robotRotDisplacement));
-//        robotVectorByOdoR = Math.atan2((lrDisplacement - robotRotDisplacement), (rrDisplacement - robotRotDisplacement));
-//
-//        frontVectorMag = Math.sqrt((lfDisplacement * lfDisplacement) + (rfDisplacement * rfDisplacement));
-//        rearVectorMag = Math.sqrt((lrDisplacement * lrDisplacement) + (rrDisplacement * rrDisplacement));
-//
-//        frontDisplacementX = frontVectorMag * Math.cos(robotVectorByOdoF);
-//        frontDisplacementY = frontVectorMag * Math.sin(robotVectorByOdoF);
-//
-//        rearDisplacementX = rearVectorMag * Math.cos(robotVectorByOdoR);
-//        rearDisplacementY = rearVectorMag * Math.sin(robotVectorByOdoR);
-//
-//        displacementX = (frontDisplacementX + rearDisplacementX) / 2;
-//        displacementY = (frontDisplacementY + rearDisplacementY) / 2;
-//
-//        return displacementY;
-//
-//    }
 }

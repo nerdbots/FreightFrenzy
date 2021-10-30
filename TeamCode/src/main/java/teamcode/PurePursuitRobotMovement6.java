@@ -296,8 +296,8 @@ public class PurePursuitRobotMovement6 {
         this.backEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //this.frontEncoder.setDirection(DcMotorEx.Direction.REVERSE);
-        this.rightEncoder.setDirection(DcMotor.Direction.FORWARD);
-        this.leftEncoder.setDirection(DcMotor.Direction.FORWARD);
+        this.rightEncoder.setDirection(DcMotor.Direction.REVERSE);
+        this.leftEncoder.setDirection(DcMotor.Direction.REVERSE);
         this.backEncoder.setDirection(DcMotor.Direction.FORWARD);
 
         xPosition = 0;
