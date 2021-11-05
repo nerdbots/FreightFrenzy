@@ -67,7 +67,7 @@ public class DuckDetector
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
             }
             @Override
             public void onError(int errorCode)
@@ -131,12 +131,17 @@ public class DuckDetector
 //        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(181,98);
 //        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253,98);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(29,120);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(138,128);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(241,128);
+//        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(29,120);
+//        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(138,128);
+//        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(241,128);
 
-        static final int REGION_WIDTH = 20;
-        static final int REGION_HEIGHT = 20;
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(110,230);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(335,240);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(555,240);
+
+
+        static final int REGION_WIDTH = 30;
+        static final int REGION_HEIGHT = 30;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values
