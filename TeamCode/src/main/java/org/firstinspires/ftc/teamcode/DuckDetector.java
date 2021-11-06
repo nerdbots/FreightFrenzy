@@ -67,7 +67,7 @@ public class DuckDetector
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640,400, OpenCvCameraRotation.UPRIGHT);
             }
             @Override
             public void onError(int errorCode)
