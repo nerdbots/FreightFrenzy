@@ -68,7 +68,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 //@Disabled
 @TeleOp(name="NerdBotsTeleop", group="Final")
-@Config
+//@Config
 public class NerdBotsTeleOp extends LinearOpMode {
 
     //FTC Dashboard
@@ -83,6 +83,11 @@ public class NerdBotsTeleOp extends LinearOpMode {
     private DcMotor frontLeftMotor;
     private DcMotor rearLeftMotor;
 
+    private DcMotor duckyDiskMotor;
+    private DcMotor intakeMotor;
+
+
+
     //variables for the gyro code
     Orientation angles;
     Acceleration gravity;
@@ -93,6 +98,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
     //create some timers
     private ElapsedTime ZPIDTime = new ElapsedTime();
     private ElapsedTime PIDTime = new ElapsedTime();
+
+    private ElapsedTime elapsedTime = new ElapsedTime();
 
     private double ZPrevError = 0;
 
@@ -153,10 +160,11 @@ public class NerdBotsTeleOp extends LinearOpMode {
     private Servo rightGrab;
 
     //For Arm PID
-    public static double armKp = 0.01;
+    public static double armKp = 0.005;//0.01
     public static double armKi = 0.0;
     public static double armKd = 0.0002;
     public static double maxPower = 0.4;
+
 
     public static int armServoPosition = 0;
     public static int grabPosition = 0;
@@ -184,8 +192,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
     double deltaTime = 0;
     double startTime = 0;
 
-    public static ArmShoulderPositions shoulderPosition = ArmShoulderPositions.INTAKE;
-    public static FingerPositions fingerPosition = FingerPositions.ENTER_INTAKE;
+    public  volatile ArmShoulderPositions shoulderPosition = ArmShoulderPositions.INTAKE;
+    public  volatile FingerPositions fingerPosition = FingerPositions.ENTER_INTAKE;
 
     public static double WRIST_SERVO_INCREMENT=0.0;
     public static double WRIST_SERVO_INCREMENT_STEP = 0.05;
@@ -198,6 +206,7 @@ public class NerdBotsTeleOp extends LinearOpMode {
     public static double RIGHT_WRIST_SERVO_POSITION=1.0;
     public static double LEFT_FINGER_SERVO_POSITION=0.53;
     public static double RIGHT_FINGER_SERVO_POSITION=0.55;
+    public  static  double INTERMEDIATE_SERVO_POSIITON=0.0;
 
     //Freight Frenzy Arm Variables
 
@@ -213,6 +222,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
         frontRightMotor = hardwareMap.get(DcMotor.class, "Front_Right_Motor");
         rearRightMotor = hardwareMap.get(DcMotor.class, "Rear_Right_Motor");
 
+        duckyDiskMotor = hardwareMap.get(DcMotor.class, "Ducky_Disk");
+        intakeMotor = hardwareMap.get(DcMotor.class, "Intake");
         //initialize the gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -244,8 +255,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
 
-        leftArmServo.setPosition(0);
-        rightArmServo.setPosition(1);
+        leftArmServo.setPosition(0.23);
+        rightArmServo.setPosition(0.77);
         leftGrab.setPosition(0.53);
         rightGrab.setPosition(0.55);
         //End Positions to get in the intake
@@ -278,8 +289,10 @@ public class NerdBotsTeleOp extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            //sets if the robot should go slower or not
-            isSlowMode = gamepad1.left_bumper;
+            currentTime = elapsedTime.seconds();
+            loopTime = currentTime - oldTime;
+            oldTime = currentTime;
+            deltaTime = currentTime - startTime;
 
             //mapping the joysticks to turning.
             if (gamepad1.left_stick_x != 0 || gamepad1.left_stick_y != 0 ) {
@@ -349,8 +362,12 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 shoulderPosition = ArmShoulderPositions.LEVEL2;
             }
             if (gamepad2.y) {
+
                 WRIST_SERVO_INCREMENT = 0.0;
                 shoulderPosition = ArmShoulderPositions.LEVEL3;
+
+
+
             }
              if(gamepad2.left_bumper){
                  WRIST_SERVO_INCREMENT = 0.0;
@@ -374,11 +391,13 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 fingerPosition = FingerPositions.INTAKE_READY;
             }
 
-            if(gamepad1.a){
-                //Place holder for Intake
-            }
+            intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
+
             if(gamepad1.x){
-                //Place holder for Duck Disk Spin
+                duckyDiskMotor.setPower(1.0);
+            }
+            if(gamepad1.y){
+                duckyDiskMotor.setPower(0);
             }
 
             //Minor Wrist adjustments
@@ -405,7 +424,10 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 }
 
             }else{
-
+                telemetry.addData("target angle", leftArmMotor.getTargetPosition());
+                telemetry.addData("actual position", leftArmMotor.getCurrentPosition());
+                telemetry.addData("Arm target", shoulderPosition.getArmTarget());
+                telemetry.update();
                 armPidOutput = armPID(shoulderPosition.getArmTarget(), leftArmMotor.getCurrentPosition() * -1);
                 armMotorsign = Math.signum(armPidOutput);
                 if (Math.abs(armPidOutput) > shoulderPosition.getMaxPower()) {
@@ -414,13 +436,20 @@ public class NerdBotsTeleOp extends LinearOpMode {
                     armMotorPower = armPidOutput;
                 }
             }
-
+//
             leftArmMotor.setPower(armMotorPower);
             rightArmMotor.setPower(armMotorPower);
 
             if(usingFTCDashboard == true) {
 
-                RIGHT_FINGER_SERVO_POSITION = 1.0 - LEFT_WRIST_SERVO_POSITION;
+                RIGHT_WRIST_SERVO_POSITION = 1.0 - LEFT_WRIST_SERVO_POSITION;
+//                RIGHT_FINGER_SERVO_POSITION = 1.0 - LEFT_FINGER_SERVO_POSITION;
+                dashboardTelemetry.addData("Right Wrist Servo Pos", RIGHT_WRIST_SERVO_POSITION);
+//                dashboardTelemetry.addData("Right Finger Servo Pos", RIGHT_FINGER_SERVO_POSITION);
+                dashboardTelemetry.addData("Left Wrist Servo Pos", LEFT_WRIST_SERVO_POSITION);
+//                dashboardTelemetry.addData("Left Finger Servo Pos", LEFT_FINGER_SERVO_POSITION);
+                dashboardTelemetry.update();
+
 
             }else{
 
@@ -430,32 +459,41 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 RIGHT_FINGER_SERVO_POSITION = fingerPosition.getRightFingerPosition();
              }
 
-            leftArmServo.setPosition(LEFT_WRIST_SERVO_POSITION+WRIST_SERVO_INCREMENT);
-            rightArmServo.setPosition(RIGHT_FINGER_SERVO_POSITION-WRIST_SERVO_INCREMENT);
-            leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
-            rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
+            if((shoulderPosition.getArmTarget() < 100) && (Math.abs(leftArmMotor.getCurrentPosition() )< 100)) {
+                INTERMEDIATE_SERVO_POSIITON = -(0.00264*leftArmMotor.getCurrentPosition() + 0.248);
+                leftArmServo.setPosition(INTERMEDIATE_SERVO_POSIITON);
+                rightArmServo.setPosition(1 - INTERMEDIATE_SERVO_POSIITON);
+                leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
+                rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
+            }else{
+                leftArmServo.setPosition(LEFT_WRIST_SERVO_POSITION + WRIST_SERVO_INCREMENT);
+                rightArmServo.setPosition(RIGHT_WRIST_SERVO_POSITION - WRIST_SERVO_INCREMENT);
+                leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
+                rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
+            }
+
 
 
             //ARM
 
             //add telemetry
 
-            telemetry.addData("X", FX);
-            telemetry.addData("Y", FY);
-            telemetry.addData("CA", CA);
-            telemetry.addData("RSA", RSA);
-            telemetry.addData("RA", getAngle());
-
-            telemetry.addData("zMag", zMag);
-            telemetry.addData("ZTar", ZTar);
-
-            telemetry.addData("FREV", frontRightMotor.getCurrentPosition());
-            telemetry.addData("FLEV", frontLeftMotor.getCurrentPosition());
-            telemetry.addData("RREV", rearRightMotor.getCurrentPosition());
-            telemetry.addData("RLEV", rearLeftMotor.getCurrentPosition());
-
-
-            telemetry.addData("Status", "Running");
+//            telemetry.addData("X", FX);
+//            telemetry.addData("Y", FY);
+//            telemetry.addData("CA", CA);
+//            telemetry.addData("RSA", RSA);
+//            telemetry.addData("RA", getAngle());
+//
+//            telemetry.addData("zMag", zMag);
+//            telemetry.addData("ZTar", ZTar);
+//
+//            telemetry.addData("FREV", frontRightMotor.getCurrentPosition());
+//            telemetry.addData("FLEV", frontLeftMotor.getCurrentPosition());
+//            telemetry.addData("RREV", rearRightMotor.getCurrentPosition());
+//            telemetry.addData("RLEV", rearLeftMotor.getCurrentPosition());
+//
+//
+//            telemetry.addData("Status", "Running");
 
         }
     }

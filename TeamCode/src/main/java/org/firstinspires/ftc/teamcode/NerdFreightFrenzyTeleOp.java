@@ -52,7 +52,7 @@ import java.util.Locale;
  * Remove a @Disabled the on the next line or two (if present) to add this opmode to the Driver Station OpMode list,
  * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
  */
-@Disabled
+//@Disabled
 @TeleOp(name="FreigntFrenzyTeleOp", group="Final")
 @Config
 public class NerdFreightFrenzyTeleOp extends LinearOpMode {
@@ -392,8 +392,8 @@ public class NerdFreightFrenzyTeleOp extends LinearOpMode {
             } else {
                 armMotorPower = armPidOutput;
             }
-//            leftArmMotor.setPower(armMotorPower);
-//            rightArmMotor.setPower(armMotorPower);
+            leftArmMotor.setPower(armMotorPower);
+            rightArmMotor.setPower(armMotorPower);
 //            setBothArmServoPosition(armServoPosition);
             leftArmServo.setPosition(leftArmTargetPosition);
             rightArmServo.setPosition(1.0 - leftArmTargetPosition);
