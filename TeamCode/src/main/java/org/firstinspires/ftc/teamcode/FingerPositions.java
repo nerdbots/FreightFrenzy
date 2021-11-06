@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 public  enum FingerPositions {
 
     ENTER_INTAKE(0.53,0.55),
