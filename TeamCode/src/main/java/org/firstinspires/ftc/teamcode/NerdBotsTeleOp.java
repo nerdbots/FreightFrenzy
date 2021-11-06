@@ -256,8 +256,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
 
-        leftArmServo.setPosition(0.23);
-        rightArmServo.setPosition(0.77);
+        leftArmServo.setPosition(0.3);
+        rightArmServo.setPosition(0.7);
         leftGrab.setPosition(0.53);
         rightGrab.setPosition(0.55);
         //End Positions to get in the intake
@@ -392,7 +392,7 @@ public class NerdBotsTeleOp extends LinearOpMode {
             }
 
             if(gamepad2.dpad_down){
-                fingerPosition = FingerPositions.RELEASE;
+                fingerPosition = FingerPositions.ENTER_INTAKE;
             }
 
             if(gamepad2.dpad_right){
@@ -402,7 +402,7 @@ public class NerdBotsTeleOp extends LinearOpMode {
             if(gamepad2.dpad_left) {
                 WRIST_SERVO_INCREMENT = 0.0;
                 if(previousShoulderPosition.equals(ArmShoulderPositions.INTAKE)) {
-                    HOME_MAX_POWER = 0.2;
+                    HOME_MAX_POWER = 0.1;
                 }
                 shoulderPosition = ArmShoulderPositions.HOME;
 
@@ -499,6 +499,10 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 rightArmServo.setPosition(RIGHT_WRIST_SERVO_POSITION - WRIST_SERVO_INCREMENT);
                 leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
                 rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
+                if(shoulderPosition.equals(ArmShoulderPositions.INTAKE) && fingerPosition.equals(FingerPositions.INTAKE_READY) ){
+                    leftGrab.setPosition(FingerPositions.INTAKE_READY.getLeftFingerPosition());
+                    rightGrab.setPosition(FingerPositions.INTAKE_READY.getRightFingerPosition());
+                }
 //            }
 
 

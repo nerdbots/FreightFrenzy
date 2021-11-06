@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 public  enum ArmShoulderPositions {
 
-    INTAKE(50,0.1,0.23,0.77),
-    LEVEL1(1100,0.4,0.2,0.8),
-    LEVEL2(860,0.4,0.4,0.6),
-    LEVEL3(600,0.4,0.75,0.25),
-    TSE_DROP(600,0.4,0.54,0.46),
-    GROUND_PICKUP(1000,0.4,0.5,0.5),
-    HOME(100,0.4,0.23,0.77);
-
+    INTAKE(0,0.1,0.28,0.72),
+    LEVEL1(1100,0.4,0.28,0.72),
+    LEVEL2(860,0.4,0.53,0.47),
+    LEVEL3(600,0.4,0.8,0.2),
+    TSE_DROP(600,0.4,0.62,0.38),
+    GROUND_PICKUP(1000,0.4,0.63,0.37),
+    HOME(100,0.2,0.15,0.85);
     private  final int armTarget;
     private final double maxPower;
     private final double leftWristServoPosition;
