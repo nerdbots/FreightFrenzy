@@ -220,9 +220,9 @@ public class tooMuchPressure extends LinearOpMode {
         rearRightMotor = hardwareMap.get(DcMotor.class, "Rear_Right_Motor");
 
         //frontEncoder = hardwareMap.get(DcMotor.class, "Front");
-        rightEncoder = hardwareMap.get(DcMotor.class, "Right");
-        leftEncoder = hardwareMap.get(DcMotor.class, "Left");
-        backEncoder = hardwareMap.get(DcMotor.class, "Back");
+        rightEncoder = hardwareMap.get(DcMotor.class, "rightArmMotor");
+        leftEncoder = hardwareMap.get(DcMotor.class, "Ducky_Disk");
+        backEncoder = hardwareMap.get(DcMotor.class, "Intake");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -287,9 +287,9 @@ public class tooMuchPressure extends LinearOpMode {
         xPositionOpt = 0;
         yPositionOpt = 0;
 
-        targetPositionFLM = frontLeftMotor.getCurrentPosition() - 2000;
+        targetPositionFLM = frontLeftMotor.getCurrentPosition() + 2000;
         targetPositionFRM = frontRightMotor.getCurrentPosition() + 2000;
-        targetPositionRLM = rearLeftMotor.getCurrentPosition() - 2000;
+        targetPositionRLM = rearLeftMotor.getCurrentPosition() + 2000;
         targetPositionRRM = rearRightMotor.getCurrentPosition() + 2000;
 
         telemetry.addData("Status", "Initialized");
@@ -318,10 +318,10 @@ public class tooMuchPressure extends LinearOpMode {
             rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            rearRightMotor.setPower(1.0);
-            frontLeftMotor.setPower(-1.0);
-            frontRightMotor.setPower(1.0);
-            rearLeftMotor.setPower(-1.0);
+            rearRightMotor.setPower(0.4);
+            frontLeftMotor.setPower(0.4);
+            frontRightMotor.setPower(0.4);
+            rearLeftMotor.setPower(0.4);
 
             robotPositionXY = findDisplacementOptical();
 

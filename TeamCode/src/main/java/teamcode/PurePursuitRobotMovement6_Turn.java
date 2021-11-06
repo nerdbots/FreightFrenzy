@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -49,8 +50,14 @@ public class PurePursuitRobotMovement6_Turn {
     private DcMotor leftEncoder;
     private DcMotor backEncoder;
 
-    Servo wobbleServo;
-    private Servo indexingServo;
+    private DcMotor duckyDiskMotor;
+    private DcMotor intakeMotor;
+
+    private Servo leftArmServo;
+    private Servo rightArmServo;
+    //Finger Servos
+    private Servo leftGrab;
+    private Servo rightGrab;
 
     public static final double indexerHomePos = 1.0;
     public static final double indexerPushedPos = 0.45;
@@ -201,6 +208,31 @@ public class PurePursuitRobotMovement6_Turn {
     double rearRightMotorPower = 0;
     double maxPowerEndPP = 0;
 
+
+    //For ArmPID
+
+    double propErrorArm = 0;
+    double intErrorArm = 0;
+    double loopTimeArm = 0;
+    double prevDerErrorArm = 0;
+    double derErrorArm = 0;
+    double angletoleranceArm = 0;
+    double motorPowerArm = 0;
+    double currentTimeArm = 0;
+    double oldTimeArm = 0;
+    double deltaTimeArm = 0;
+    double startTimeArm = 0;
+    public static double armKp = 0.005;//0.01
+    public static double armKi = 0.0;
+    public static double armKd = 0.0002;
+    public static double maxPowerArm = 0.4;
+
+    public static double HOME_MAX_POWER = 0.2;
+
+
+    //
+
+
     //for Jusnoor's code
     double prevTickTime = 0;
     int prevLeft = 0, prevRight = 0, prevLeftB = 0, prevRightB = 0;
@@ -253,6 +285,9 @@ public class PurePursuitRobotMovement6_Turn {
         this.rightEncoder = this.hardwareMap.get(DcMotor.class, "rightArmMotor");
         this.leftEncoder = this.hardwareMap.get(DcMotor.class, "Ducky_Disk");
         this.backEncoder = this.hardwareMap.get(DcMotor.class, "Intake");
+
+
+
 
 //        this.wobbleServo = hardwareMap.get(Servo.class, "wobble_Goal_Servo");
 //        this.indexingServo = hardwareMap.get(Servo.class, "indexingServo");
@@ -324,7 +359,17 @@ public class PurePursuitRobotMovement6_Turn {
         this.rearLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rearRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        leftArmServo = hardwareMap.get(Servo.class, "leftArmServo");
+        rightArmServo = hardwareMap.get(Servo.class, "rightArmServo");
+        leftGrab = hardwareMap.get(Servo.class, "leftGrab");
+        rightGrab = hardwareMap.get(Servo.class, "rightGrab");
 
+        //Positions to get in the intake. This is initial position we will be at the beginning.
+
+        leftArmServo.setPosition(0.3);
+        rightArmServo.setPosition(0.7);
+        leftGrab.setPosition(0.53);
+        rightGrab.setPosition(0.55);
 
 
         xPositionOpticalInit = 0;
@@ -587,9 +632,9 @@ public class PurePursuitRobotMovement6_Turn {
 
         //robot rotation (each loop) expressed in motor ticks (robot angle, ticks per degree robot rotation...determined through testing for each encoder wheel).
         //double robotRotDisplacementOptFront = robotRotOpt * 0; //21.390 ticks per degree of robot rotation
-        double robotRotDisplacementOptRight = robotRotOpt * 42.675; //21.085each wheel is mounted slightly different on the bot
-        double robotRotDisplacementOptLeft = robotRotOpt * 41.138; //21.318
-        double robotRotDisplacementOptBack = robotRotOpt * 10.827; //21.093
+        double robotRotDisplacementOptRight = robotRotOpt * 43.223; //21.085each wheel is mounted slightly different on the bot
+        double robotRotDisplacementOptLeft = robotRotOpt * 41.958; //21.318
+        double robotRotDisplacementOptBack = robotRotOpt * 12.368; //21.093
 
         //measure encoder position
         //frontPositionOptical = frontEncoder.getCurrentPosition();
@@ -784,6 +829,9 @@ public class PurePursuitRobotMovement6_Turn {
 
         while (this.opmode.opModeIsActive() && !this.opmode.isStopRequested() && !distanceTargetReached(distanceToEndPoint, parkRadius)) {
 
+
+
+
             for (int i = 0; i < allPoints.size() - 1; i++) {
                 ComputerDebugging.sendLine(new FloatPoint(allPoints.get(i).x, allPoints.get(i).y),
                         new FloatPoint(allPoints.get(i + 1).x, allPoints.get(i + 1).y));
@@ -822,6 +870,103 @@ public class PurePursuitRobotMovement6_Turn {
         rearLeftMotor.setPower(0);
         rearRightMotor.setPower(0);
     }
+
+    public void followCurveArm(ArrayList<CurvePoint> allPoints, double zPowerFF, double distanceToPark, double parkAngleTarget, double parkRadius, ArmShoulderPositions targetShoulderPosition, FingerPositions targetFingerPositions, String motor, double power){
+
+        startTime = elapsedTime.seconds();
+        oldTime = startTime;
+        distanceToEndPoint = 10;
+        NerdPID_PurePursuit.resetIntError();
+        zPowerStart = zPowerFF;
+        zPowerIncrease = 0.075;
+        angleStart = getAngle() + 90;
+        angleIncrement = ((parkAngleTarget - angleStart) / (distanceToEndPoint - distanceToPark));
+        robotFaceAngle = angleStart;
+
+        while (this.opmode.opModeIsActive() && !this.opmode.isStopRequested() && !distanceTargetReached(distanceToEndPoint, parkRadius)) {
+
+            currentTime = elapsedTime.seconds();
+            loopTime = currentTime - oldTime;
+            oldTime = currentTime;
+            deltaTime = currentTime - startTime;
+
+            for (int i = 0; i < allPoints.size() - 1; i++) {
+                ComputerDebugging.sendLine(new FloatPoint(allPoints.get(i).x, allPoints.get(i).y),
+                        new FloatPoint(allPoints.get(i + 1).x, allPoints.get(i + 1).y));
+            }
+
+            double[] robotPositionXYV = findDisplacementOptical();
+
+            CurvePoint followMe = getFollowPointPath(allPoints, new PointPP(robotPositionXYV[4], robotPositionXYV[5]),
+                    allPoints.get(0).followDistance);
+
+            CurvePoint endPoint = getEndPoint(allPoints, new PointPP(robotPositionXYV[4], robotPositionXYV[5]),
+                    allPoints.get(0).followDistance);
+
+            CurvePoint startPath = getStartPath(allPoints, new PointPP(robotPositionXYV[4], robotPositionXYV[5]),
+                    allPoints.get(0).followDistance);
+
+            ComputerDebugging.sendKeyPoint(new FloatPoint(followMe.x, followMe.y));
+
+            distanceToEndPoint = Math.hypot(endPoint.x - robotPositionXYV[4], endPoint.y - robotPositionXYV[5]);
+
+            if(distanceToEndPoint < distanceToPark){
+                goToPositionEndPP(endPoint.x, endPoint.y, 1.0, parkAngleTarget, 0.2, distanceToPark);
+            }
+            else {
+                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y);
+            }
+
+//            if (debugFlag) {
+//                RobotLog.d("FollowCurve - distanceToEndPoint %f, endPoint.x %f, endPoint.y %f, followMe.x %f, followMe.y %f, robotXPosition %f, robotYPosition %f, followMe.moveSpeed %f, followAngle %f, followMe.turnspeed %f",
+//                        distanceToEndPoint, endPoint.x, endPoint.y, followMe.x, followMe.y, robotPositionXYV[4], robotPositionXYV[5], followMe.moveSpeed, followAngle, followMe.turnSpeed);
+//            }
+            double armPidOutput = 0.0;
+            double armMotorsign = 1.0;
+            double armMotorPower = 0.0;
+
+            armPidOutput = armPID(targetShoulderPosition.getArmTarget(), frontEncoder.getCurrentPosition() * -1);
+            armMotorsign = Math.signum(armPidOutput);
+            if(targetShoulderPosition.equals(ArmShoulderPositions.HOME) || targetShoulderPosition.equals(ArmShoulderPositions.INTAKE)) {
+                if (Math.abs(armPidOutput) > HOME_MAX_POWER) {
+                    armMotorPower = armMotorsign * HOME_MAX_POWER;
+                } else {
+                    armMotorPower = armPidOutput;
+                }
+            }
+            else {
+                if (Math.abs(armPidOutput) > targetShoulderPosition.getMaxPower()) {
+                    armMotorPower = armMotorsign * targetShoulderPosition.getMaxPower();
+                } else {
+                    armMotorPower = armPidOutput;
+                }
+            }
+
+            leftEncoder.setPower(armMotorPower);
+            rightEncoder.setPower(armMotorPower);
+            leftArmServo.setPosition(targetShoulderPosition.getLeftWristServoPosition());
+            rightArmServo.setPosition(targetShoulderPosition.getRightWristServoPosition());
+            leftGrab.setPosition(targetFingerPositions.getLeftFingerPosition());
+            rightGrab.setPosition(targetFingerPositions.getRightFingerPosition());
+
+            if(motor.equals("intake"))
+            runMotor("intake", power);
+            else if (motor.equals("duckyDisc"))
+            runMotor("duckyDisc", power);
+
+        }
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        rearLeftMotor.setPower(0);
+        rearRightMotor.setPower(0);
+
+        runMotor("intake",0);
+
+        leftGrab.setPosition(FingerPositions.RELEASE.getLeftFingerPosition());
+        rightGrab.setPosition(FingerPositions.RELEASE.getRightFingerPosition());
+    }
+
+
 
     private CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, PointPP robotLocation, double followRadius){
         CurvePoint followMe = new CurvePoint(pathPoints.get(0));
@@ -1136,146 +1281,52 @@ public class PurePursuitRobotMovement6_Turn {
 
     }
 
-    //    Puts the wobble arm down from it's original position. Used at the start of the match.
-    //    leftEncoder = wobbleMotor
-    public void beginningDown() {
-        Timer.reset();
-        while(Timer.seconds() < 0.35) {
-            leftEncoder.setPower(0.55);
+    public void runMotor(String motor, double power){
+        if (motor.equals("duckyDisc")){
+         this.leftEncoder.setPower(power);
+//         this.frontLeftMotor.setPower(power/6);
+//         this.rearLeftMotor.setPower(-power/6);
+//         this.frontRightMotor.setPower(power/6);
+//         this.rearRightMotor.setPower(-power/6);
         }
-        leftEncoder.setPower(0);
+        else if (motor.equals("intake")){
+            this.backEncoder.setPower(power);
 
-        wobbleServo.setPosition(0);
-
-        opmode.sleep(500);
+        }
 
     }
 
-    //Closes servo, then picks up wobble goal
-    public void pickupWobble() {
-        wobbleServo.setPosition(0.75);
 
-        opmode.sleep(1000);
+    private double armPID(double targetValue, double currentValue) {
 
-        Timer.reset();
-        while(Timer.seconds() < 0.75) {
-            leftEncoder.setPower(-0.9);
+
+        propErrorArm = (targetValue - currentValue);
+
+        intErrorArm += (targetValue - currentValue) * loopTimeArm;
+
+        derErrorArm = ((targetValue - currentValue) - prevDerErrorArm) / loopTime;
+        prevDerErrorArm = targetValue - currentValue;
+
+        if (Math.abs(targetValue - currentValue) < angletoleranceArm) {
+//                    onTarget = true;
+//                    runTest = false;
+            motorPowerArm = propErrorArm * armKp + intErrorArm * armKi;
+            intErrorArm = 0;
+        } else {
+            motorPowerArm = propErrorArm * armKp + intErrorArm * armKi + derErrorArm * armKd;
         }
-        leftEncoder.setPower(0.1);
+//        if (Math.abs(targetValue - currentValue) < 0.5) {
+//            motor1.setPower(0);
+//       }
+        double motorPowersin = Math.signum(motorPowerArm);
+        if (Math.abs(motorPowerArm) > maxPowerArm) {
+            motorPowerArm = maxPowerArm * motorPowersin;
 
-    }
-    //Lowers motor, then releases wobble goal
-    public void setDownWobble() {
-        Timer.reset();
-        while(Timer.seconds() < 0.35) {
-            leftEncoder.setPower(0.55);
         }
-
-        leftEncoder.setPower(0);
-        opmode.sleep(500);
-        wobbleServo.setPosition(0);
-    }
-
-    public void upWobble() {
-        wobbleServo.setPosition(0.75);
-
-        opmode.sleep(1000);
-
-        Timer.reset();
-        while(Timer.seconds() < 0.75) {
-            leftEncoder.setPower(-0.9);
-        }
-        leftEncoder.setPower(0.0);
+        return motorPowerArm;
     }
 
-//    public void runShoot() {
-//        runShooterMotor(0.92);
-//        opmode.sleep(1000);
-//        indexRings();
-//
-//    }
-//
-//    //Function to run shooter motor. Run this function and then sleep for a little bit to let
-//    //the motor charge up. Then run the indexRings function
-//    //frontEncoder = shooterMotor and rightEncoder = intakeMotor
-//    public void runShooterMotor(double motorPower) {
-//        frontEncoder.setPower(motorPower);
-//    }
 
-//    public void indexRings() {
-//        int count = 0;
-//        boolean cycle = true;
-//        indexingServo.setPosition(indexerHomePos);
-//        while(count < 8){
-//            double position = 0.0;
-//
-//            if (cycle) {
-//                //Make Indexer go forward
-//                position = this.indexerPushedPos;
-//                cycle = false;
-//            } else {
-//                //Make Indexer go backward
-//                position = this.indexerHomePos;
-//                cycle = true;
-//            }
-//
-//            if(count == 6 || count == 7) {
-//                rightEncoder.setPower(-1);
-//            }
-//
-//            // Set the servo to the new position and pause;
-//            indexingServo.setPosition(position);
-//            opmode.sleep(300);
-//            //sleep(1000);
-//            count++;
-//        }
-//        //Stop Motor
-//        frontEncoder.setPower(0);
-//        rightEncoder.setPower(0);
-//    }
-
-    //Function to run shooter motor. Run this function and then sleep for a little bit to let
-//the motor charge up. Then run the indexRings function
-//    public void runShoot() {
-//        this.frontEncoder.setVelocity(shooterVeloc);
-//        indexRings();
-//    }
-//    public void indexRings() {
-//        boolean shouldIndex = false;
-//        int count = 0;
-//        boolean cycle = true;
-//        indexingServo.setPosition(indexerHomePos);
-//        while(count < 8){
-//            double position = 0.0;
-//            if(shouldIndex) {
-//                if (cycle) {
-//                    //Make Indexer go forward
-//                    position = this.indexerPushedPos;
-//                    cycle = false;
-//                } else {
-//                    //Make Indexer go backward
-//                    position = this.indexerHomePos;
-//                    cycle = true;
-//                }
-//                if (count == 6 || count == 7) {
-//                    this.rightEncoder.setPower(-1);
-//                }
-//            }
-//            // Set the servo to the new position and pause;
-//            indexingServo.setPosition(position);
-//            //checks if the velocity is within a threshold
-//            if((Math.abs(Math.abs(frontEncoder.getVelocity()) - Math.abs(shooterVeloc))) < 100) {
-//                shouldIndex = true;
-//                count++;
-//            } else {
-//                shouldIndex = false;
-//            }
-//        }
-//        //Stop Motor
-//        this.frontEncoder.setVelocity(0);
-//        //this.frontEncoder.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-//        this.rightEncoder.setPower(0);
-//    }
 
 
 
