@@ -97,9 +97,9 @@ public class NerdPID_PurePursuit {
 
     public static double zPowerDrive (double targetAngleDrive, double gyroAngleDrive, double deltaTimePIDDrive){
 
-        double kPD = 0.0075; // new 0.0075 -- old 0.005
-        double kID = 0.0006; // new 0.0006 -- old 0.00
-        double kDD = 0.001; // new 0.001 -- old 0.000
+        double kPD = 0.005; // new 0.0075 -- old 0.005
+        double kID = 0.000; // new 0.0006 -- old 0.00
+        double kDD = 0.000; // new 0.001 -- old 0.000
 
         //calculate error (Proportional)
         propErrorD = targetAngleDrive - gyroAngleDrive;
@@ -175,9 +175,9 @@ public class NerdPID_PurePursuit {
 
     public static double zPowerPark (double targetAnglePark, double gyroAnglePark, double deltaTimePIDPark){
 
-        double kPP = 0.0075; //0.005 // new 0.0075 -- old 0.005
-        double kIP = 0.0006; //0.002 // new 0.0006 -- old 0.003
-        double kDP = 0.001; //0.000 // new 0.001 -- old 0.000
+        double kPP = 0.005; //0.005 // new 0.0075 -- old 0.005
+        double kIP = 0.000; //0.002 // new 0.0006 -- old 0.003
+        double kDP = 0.000; //0.000 // new 0.001 -- old 0.000
 
         //calculate error (Proportional)
         propErrorP = targetAnglePark - gyroAnglePark;
@@ -233,9 +233,9 @@ public class NerdPID_PurePursuit {
     }
 
     public static double shortParkPID (double robotDistanceToTarget, double prevRobotDistanceToTarget, double deltaTimePIDMS){
-        double kPSP = 0.020;//0.033
+        double kPSP = 0.033;//0.033
         double kISP = 0.250;
-        double kDSP = 0.010;
+        double kDSP = 0.0075;
 
         //calculate error (Proportional)
         propErrorSP = robotDistanceToTarget;
@@ -261,7 +261,7 @@ public class NerdPID_PurePursuit {
     public static double goToPositionParkPID (double robotDistanceToTarget, double prevRobotDistanceToTarget, double deltaTimePIDGTPP){
         double kPMS = 0.033;
         double kIMS = 0.300;
-        double kDMS = 0.017;
+        double kDMS = 0.01;
 
         //calculate error (Proportional)
         propErrorMS = robotDistanceToTarget;
