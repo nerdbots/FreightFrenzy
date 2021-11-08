@@ -67,7 +67,7 @@ public class DuckDetector
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
             }
             @Override
             public void onError(int errorCode)
@@ -131,12 +131,17 @@ public class DuckDetector
 //        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(181,98);
 //        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253,98);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(29,120);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(138,128);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(241,128);
+//        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(29,120);
+//        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(138,128);
+//        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(241,128);
 
-        static final int REGION_WIDTH = 20;
-        static final int REGION_HEIGHT = 20;
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(110,230);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(335,240);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(555,240);
+
+
+        static final int REGION_WIDTH = 30;
+        static final int REGION_HEIGHT = 30;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values
@@ -183,7 +188,7 @@ public class DuckDetector
         int avg1, avg2, avg3;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile DuckDeterminationPipeline.DuckPosition position = DuckDeterminationPipeline.DuckPosition.LEFT;
+        private volatile DuckPosition position = DuckPosition.LEFT;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
@@ -319,7 +324,7 @@ public class DuckDetector
              */
             if(min == avg1) // Was it from region 1?
             {
-                position = DuckDeterminationPipeline.DuckPosition.LEFT; // Record our analysis
+                position = DuckPosition.LEFT; // Record our analysis
 
                 /*
                  * Draw a solid rectangle on top of the chosen region.
@@ -334,7 +339,7 @@ public class DuckDetector
             }
             else if(min == avg2) // Was it from region 2?
             {
-                position = DuckDeterminationPipeline.DuckPosition.CENTER; // Record our analysis
+                position = DuckPosition.CENTER; // Record our analysis
 
                 /*
                  * Draw a solid rectangle on top of the chosen region.
@@ -349,7 +354,7 @@ public class DuckDetector
             }
             else if(min == avg3) // Was it from region 3?
             {
-                position = DuckDeterminationPipeline.DuckPosition.RIGHT; // Record our analysis
+                position = DuckPosition.RIGHT; // Record our analysis
 
                 /*
                  * Draw a solid rectangle on top of the chosen region.
@@ -374,10 +379,16 @@ public class DuckDetector
         /*
          * Call this from the OpMode thread to obtain the latest analysis
          */
-        public DuckDeterminationPipeline.DuckPosition getAnalysis()
+        public DuckPosition getAnalysis()
         {
             return position;
         }
+    }
+
+    public void closeCameraDevice() {
+        webcam.stopRecordingPipeline();
+        webcam.stopStreaming();
+        webcam.closeCameraDevice();
     }
 
 
