@@ -29,8 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.ftccommon.FtcWifiDirectChannelSelectorActivity;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -73,12 +71,12 @@ public class BlockDetector{
    *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
    *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
    */
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String[] LABELS = {
-      "Ball",
-      "Cube",
-      "Duck",
-      "Marker"
+//      "Ball",
+      "Cube"
+//      "Duck",
+//      "Marker"
     };
 
     /*
@@ -128,7 +126,10 @@ public class BlockDetector{
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(2.5, 16.0/9.0);
+
+           tfod.setZoom(2.5, 16.0/9.0);
+
+//            tfod.setZoom(1.5,4.0/3.0);
         }
 
         /** Wait for the game to begin */
@@ -163,6 +164,10 @@ public class BlockDetector{
 
                     }
                 }
+                else{
+                    opMode.telemetry.addData("TFOD is", "null");
+                    opMode.telemetry.update();
+                }
             }
         }
         return detectedRecognition;
@@ -182,7 +187,6 @@ public class BlockDetector{
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-        FtcDashboard.getInstance().startCameraStream(vuforia,0);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
@@ -194,8 +198,8 @@ public class BlockDetector{
         int tfodMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minResultConfidence = 0.8f;
-       tfodParameters.isModelTensorFlow2 = true;
+       tfodParameters.minResultConfidence = 0.6f;
+       tfodParameters.isModelTensorFlow2 = false;
        tfodParameters.inputSize = 320;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
@@ -203,7 +207,6 @@ public class BlockDetector{
 
     public double getDistance(Recognition recognition){
         return  ((KNOWN_LENGTH_OF_OBJECT * FOCAL_LENGTH)/recognition.getWidth());
-
     }
 
 }
