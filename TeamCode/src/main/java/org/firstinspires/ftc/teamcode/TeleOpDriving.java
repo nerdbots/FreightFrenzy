@@ -48,7 +48,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
  */
 @Disabled
-@TeleOp(name="DriveOnl", group="Final")
+@TeleOp(name="DriveOnly", group="Final")
 public class TeleOpDriving extends LinearOpMode {
     private BNO055IMU imu;
     private DcMotor frontRightMotor;

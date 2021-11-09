@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.DuckDetector;
 
 import java.util.ArrayList;
-
+import org.firstinspires.ftc.teamcode.*;
 import treamcode.CurvePoint;
 
 
@@ -84,16 +84,24 @@ public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
             allPoints.add(new CurvePoint(-27, 22, 0.35, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-80, 80, 0.35, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, -90, 3, shoulderPosition, FingerPositions.GRAB, "none", 0);
-
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, -90, 3, shoulderPosition, FingerPositions.GRAB, 0,1,"none", 0);
+//            myPurePursuitRobotMovement6_Turn.turnRobot(-45);
 //            sleep(2000);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-27, 22, 0.3, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(-34, 10, 0.3, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-45, -30, 0.3, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-27, 22, 0.6, 0.3, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(15, 10, 0.6, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(80, 0, 0.6, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, -120, 3, ArmShoulderPositions.INTAKE,FingerPositions.ENTER_INTAKE,"intake", -1);
+//   11_09        myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 15, -120, 3);
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, -120, 3, ArmShoulderPositions.HOME,FingerPositions.ENTER_INTAKE,1.0,0,"none",0);
+
+            allPoints = new ArrayList<>();
+            allPoints.add(new CurvePoint(15, 10, 0.6, 0.4, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(-34, 10, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-85, 10, 0.6, 0.4, 25, 180, 0.3));
+
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, -150, 3, ArmShoulderPositions.INTAKE,FingerPositions.ENTER_INTAKE,0,0,"intake", -1);
 
             myPurePursuitRobotMovement6_Turn.runMotor("intake", -1,2);
 
@@ -104,7 +112,7 @@ public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
             allPoints.add(new CurvePoint(-25, 22, 0.3, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(0, 48, 0.3, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, -90, 3, shoulderPosition, FingerPositions.GRAB, "none", 0);
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, -90, 3, shoulderPosition, FingerPositions.GRAB, 0,1,"none", 0);
 
 //            sleep(2000);
 
@@ -113,7 +121,7 @@ public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
             allPoints.add(new CurvePoint(21, 8, 0.6, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(60, 8, 0.6, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, -160, 3, ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, "none", 0);
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, -160, 3, ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, 1, 0,"none", 0);
 
             myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",-1,3);
 //            sleep(2000);
@@ -127,7 +135,6 @@ public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
             myPurePursuitRobotMovement6_Turn.followCurve(allPoints, -0.25, 35, -180, 5);
 
             //----------------------------------------------
-
 
 
         }

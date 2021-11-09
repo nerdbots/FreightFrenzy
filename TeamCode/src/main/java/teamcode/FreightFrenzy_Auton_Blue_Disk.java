@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.DuckDetector;
 
 import java.util.ArrayList;
-
+import org.firstinspires.ftc.teamcode.*;
 import treamcode.CurvePoint;
 
 
@@ -22,8 +22,8 @@ public class FreightFrenzy_Auton_Blue_Disk extends LinearOpMode {
     DuckDetector.DuckDeterminationPipeline.DuckPosition duckPosition;
     DuckDetector duckDetector;
 
-    public  volatile ArmShoulderPositions shoulderPosition = ArmShoulderPositions.INTAKE;
-    public  volatile FingerPositions fingerPosition = FingerPositions.ENTER_INTAKE;
+    public volatile ArmShoulderPositions shoulderPosition = ArmShoulderPositions.INTAKE;
+    public volatile FingerPositions fingerPosition = FingerPositions.ENTER_INTAKE;
 
 
     @Override
@@ -80,7 +80,7 @@ public class FreightFrenzy_Auton_Blue_Disk extends LinearOpMode {
             allPoints.add(new CurvePoint(27, 22, 0.4, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(80, 80, 0.4, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, 90, 3, shoulderPosition, FingerPositions.GRAB, "none", 0);
+  //11_09          myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, 90, 3, shoulderPosition, FingerPositions.GRAB,0, "none", 0);
 
             sleep(2000);
 
@@ -89,9 +89,9 @@ public class FreightFrenzy_Auton_Blue_Disk extends LinearOpMode {
             allPoints.add(new CurvePoint(34, 10, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(45, -30, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 120, 3, ArmShoulderPositions.INTAKE,FingerPositions.ENTER_INTAKE,"intake", 1);
+            //11_09        myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 120, 3, ArmShoulderPositions.INTAKE,FingerPositions.ENTER_INTAKE,0,"intake", 1);
 
-            myPurePursuitRobotMovement6_Turn.runMotor("intake", 1,2);
+            //11_09          myPurePursuitRobotMovement6_Turn.runMotor("intake", 1,2);
 
             sleep(2000);
 
@@ -100,7 +100,7 @@ public class FreightFrenzy_Auton_Blue_Disk extends LinearOpMode {
             allPoints.add(new CurvePoint(25, 22, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(0, 48, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 90, 3, shoulderPosition, FingerPositions.GRAB, "none", 0);
+            //11_09      myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 90, 3, shoulderPosition, FingerPositions.GRAB, 0,"none", 0);
 
             sleep(2000);
 
@@ -109,9 +109,9 @@ public class FreightFrenzy_Auton_Blue_Disk extends LinearOpMode {
             allPoints.add(new CurvePoint(-21, 8, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(60, 8, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 160, 1, ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, "none", 0);
+            //11_09     myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 160, 1, ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE,0, "none", 0);
 
-            myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",1,2);
+            //11_09      myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",1,2);
             sleep(2000);
 
             allPoints = new ArrayList<>();
@@ -120,7 +120,7 @@ public class FreightFrenzy_Auton_Blue_Disk extends LinearOpMode {
             allPoints.add(new CurvePoint(83, -1, 0.8, 0.3, 40, 180, 0.3));
             allPoints.add(new CurvePoint(130, -1, 0.8, 0.3, 40, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, -0.25, 35, 180, 5);
+            //11_09      myPurePursuitRobotMovement6_Turn.followCurve(allPoints, -0.25, 35, 180, 5);
 
             //----------------------------------------------
 

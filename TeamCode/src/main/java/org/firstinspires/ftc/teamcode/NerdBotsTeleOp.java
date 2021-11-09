@@ -196,7 +196,7 @@ public class NerdBotsTeleOp extends LinearOpMode {
     public volatile  ArmShoulderPositions currentShoulderPosition =ArmShoulderPositions.INTAKE;
 
     public static double WRIST_SERVO_INCREMENT=0.0;
-    public static double WRIST_SERVO_INCREMENT_STEP = 0.05;
+    public static double WRIST_SERVO_INCREMENT_STEP = 0.1;
 
     //If using FTC Dashboard
 
@@ -316,6 +316,9 @@ public class NerdBotsTeleOp extends LinearOpMode {
             } else if (gamepad1.dpad_right) {
                 joyX = 1;
                 joyY = 0;
+            }else if(gamepad1.a){  //11_09 added below else if block
+                joyX = 1;
+                joyY = 1;
             }
 
 
@@ -353,13 +356,13 @@ public class NerdBotsTeleOp extends LinearOpMode {
             //ARM
             if (gamepad2.a){
                 WRIST_SERVO_INCREMENT = 0.0;
+
                 if(previousShoulderPosition.equals(ArmShoulderPositions.HOME)) {
                     HOME_MAX_POWER = 0.2;
                 }
                 shoulderPosition = ArmShoulderPositions.INTAKE;
                 fingerPosition = FingerPositions.ENTER_INTAKE;
-
-            }
+             }
             if (gamepad2.b) {
                 WRIST_SERVO_INCREMENT = 0.0;
                 shoulderPosition = ArmShoulderPositions.LEVEL1;
@@ -373,8 +376,6 @@ public class NerdBotsTeleOp extends LinearOpMode {
 
                 WRIST_SERVO_INCREMENT = 0.0;
                 shoulderPosition = ArmShoulderPositions.LEVEL3;
-
-
 
             }
              if(gamepad2.left_bumper){
@@ -406,7 +407,18 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 }
                 shoulderPosition = ArmShoulderPositions.HOME;
 
+            }
 
+            //Minor Wrist adjustments
+
+            if(gamepad2.right_bumper && gamepad2.dpad_up){
+                WRIST_SERVO_INCREMENT += WRIST_SERVO_INCREMENT_STEP;
+                WRIST_SERVO_INCREMENT -= WRIST_SERVO_INCREMENT_STEP;
+            }
+
+            if(gamepad2.right_bumper && gamepad2.dpad_down){
+                WRIST_SERVO_INCREMENT -= WRIST_SERVO_INCREMENT_STEP;
+                WRIST_SERVO_INCREMENT += WRIST_SERVO_INCREMENT_STEP;
             }
 
             intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
@@ -414,20 +426,17 @@ public class NerdBotsTeleOp extends LinearOpMode {
             if(gamepad1.x){
                 duckyDiskMotor.setPower(1.0);
             }
-            if(gamepad1.y){
+            //Nov 8 Change
+            else {
                 duckyDiskMotor.setPower(0);
             }
+            //End of Nov 8 Change
+
+//            if(gamepad1.y){
+////                duckyDiskMotor.setPower(0);
+////            }
 
             //Minor Wrist adjustments
-
-            if(gamepad2.right_stick_y > 0 ) {
-                WRIST_SERVO_INCREMENT += WRIST_SERVO_INCREMENT_STEP;
-                WRIST_SERVO_INCREMENT -= WRIST_SERVO_INCREMENT_STEP;
-            }
-            if(gamepad2.right_stick_y < 0){
-                WRIST_SERVO_INCREMENT -= WRIST_SERVO_INCREMENT_STEP;
-                WRIST_SERVO_INCREMENT += WRIST_SERVO_INCREMENT_STEP;
-            }
 
 
             double armPidOutput = 0.0;
@@ -472,11 +481,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
             if(usingFTCDashboard == true) {
 
                 RIGHT_WRIST_SERVO_POSITION = 1.0 - LEFT_WRIST_SERVO_POSITION;
-//                RIGHT_FINGER_SERVO_POSITION = 1.0 - LEFT_FINGER_SERVO_POSITION;
                 dashboardTelemetry.addData("Right Wrist Servo Pos", RIGHT_WRIST_SERVO_POSITION);
-//                dashboardTelemetry.addData("Right Finger Servo Pos", RIGHT_FINGER_SERVO_POSITION);
                 dashboardTelemetry.addData("Left Wrist Servo Pos", LEFT_WRIST_SERVO_POSITION);
-//                dashboardTelemetry.addData("Left Finger Servo Pos", LEFT_FINGER_SERVO_POSITION);
                 dashboardTelemetry.update();
 
 
@@ -487,25 +493,17 @@ public class NerdBotsTeleOp extends LinearOpMode {
                 LEFT_FINGER_SERVO_POSITION = fingerPosition.getLeftFingerPosition();
                 RIGHT_FINGER_SERVO_POSITION = fingerPosition.getRightFingerPosition();
              }
-
-//            if((shoulderPosition.getArmTarget() < 100) && (Math.abs(leftArmMotor.getCurrentPosition() )< 100)) {
-//                INTERMEDIATE_SERVO_POSIITON = -(0.00264*leftArmMotor.getCurrentPosition() + 0.248);
-//                leftArmServo.setPosition(INTERMEDIATE_SERVO_POSIITON);
-//                rightArmServo.setPosition(1 - INTERMEDIATE_SERVO_POSIITON);
-//                leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
-//                rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
-//            }else{
                 leftArmServo.setPosition(LEFT_WRIST_SERVO_POSITION + WRIST_SERVO_INCREMENT);
                 rightArmServo.setPosition(RIGHT_WRIST_SERVO_POSITION - WRIST_SERVO_INCREMENT);
                 leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
                 rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
-                if(shoulderPosition.equals(ArmShoulderPositions.INTAKE) && fingerPosition.equals(FingerPositions.INTAKE_READY) ){
+
+                if(shoulderPosition.equals(ArmShoulderPositions.INTAKE) && fingerPosition.equals(FingerPositions.ENTER_INTAKE) ){
                     leftGrab.setPosition(FingerPositions.INTAKE_READY.getLeftFingerPosition());
                     rightGrab.setPosition(FingerPositions.INTAKE_READY.getRightFingerPosition());
                 }
-//            }
 
-
+                previousShoulderPosition = shoulderPosition;
 
             //ARM
 
@@ -527,7 +525,6 @@ public class NerdBotsTeleOp extends LinearOpMode {
 //
 //
 //            telemetry.addData("Status", "Running");
-                previousShoulderPosition = shoulderPosition;
         }
     }
 
@@ -608,7 +605,6 @@ public class NerdBotsTeleOp extends LinearOpMode {
         //Max total error
         if (Math.abs(TotalError) > MaxError) {
 
-
             if (TotalError > 0) {
                 TotalError = MaxError;
             } else {
@@ -666,7 +662,9 @@ public class NerdBotsTeleOp extends LinearOpMode {
 
         //Does more math with the joysticks
         if (Math.sqrt(zMag) > 0.5) {
-            ZTar = Math.atan2(-Xmath, -Ymath) * 180 / 3.14159;
+            //11_09
+//            ZTar = Math.atan2(-Xmath, -Ymath) * 180 / 3.14159;
+            ZTar = Math.atan2(-Xmath, -Ymath) * 180 / 3.14159 + 90;
 
         }
 
@@ -680,7 +678,10 @@ public class NerdBotsTeleOp extends LinearOpMode {
         }
 
         //more complicated math I barely understand. If the drivetrain angle changes, play around with this number.
-        CA = (Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) * 180 / 3.14) + 45;
+        // 11_09
+//        CA = (Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) * 180 / 3.14) + 45;
+        CA = (Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) * 180 / 3.14) + 135;
+
 
         RSA = (CA - getAngle()) * 3.14 / 180;
 
@@ -695,6 +696,8 @@ public class NerdBotsTeleOp extends LinearOpMode {
             FLMP = -gamepad1.left_stick_x - FX;
             RLMP = -gamepad1.left_stick_x + FY;
             FRMP = -gamepad1.left_stick_x - FY;
+            //11_09 added below
+            ZTar = 0;
 
         } else {  //Allowing you to use tank turning if you're using slow mode
             RRMP = (ZSpeed * multZ) + FX; //multZ will only affect Z. This is because if joypad Z is zero then Z is zero.
