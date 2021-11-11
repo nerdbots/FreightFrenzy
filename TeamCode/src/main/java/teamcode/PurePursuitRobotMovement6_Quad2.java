@@ -1105,9 +1105,9 @@ public class PurePursuitRobotMovement6_Quad2 {
 
         double absoluteAngleToTarget = Math.atan2(y - robotPositionXYOptical[5], x - robotPositionXYOptical[4]) * 180 / Math.PI;
 
-        if (distanceToEndPoint > 25) {
+        if (distanceToEndPoint > 20) {
             if (distanceToTarget < distanceToEndPoint && distanceToTarget > (distanceToEndPoint / 2)) {
-                robotTargetSpeed = Range.clip(movementSpeed * (distanceToTarget - (distanceToEndPoint / 2)) / 30, 0.2, 1);
+                robotTargetSpeed = Range.clip(movementSpeed * (distanceToTarget - (distanceToEndPoint / 2)) / 30, 0.4, 1);
                 prevDistanceToTarget = distanceToEndPoint / 2;
             } else if (distanceToTarget < (distanceToEndPoint / 2)) {
                 robotTargetSpeedPID = NerdPID_PurePursuit.movementSpeedPID(distanceToTarget, prevDistanceToTarget, loopTime);

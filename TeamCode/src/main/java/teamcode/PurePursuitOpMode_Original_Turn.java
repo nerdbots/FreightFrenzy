@@ -19,7 +19,7 @@ public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
 
     boolean debugFlag = true;
 
-    int purePursuitPath = 1;
+    int purePursuitPath = 2;
     DuckDetector.DuckDeterminationPipeline.DuckPosition duckPosition;
     DuckDetector duckDetector;
 
@@ -139,6 +139,14 @@ public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
             //----------------------------------------------
 
 
+        }
+        else if (purePursuitPath == 2) {
+            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+            allPoints.add(new CurvePoint(0, 0, 0.8, 0.3, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(0, 60, 0.8, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(0, 100, 0.8, 0.3, 25, 180, 0.3));
+
+            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 15, 270, 3);
         }
     }
 

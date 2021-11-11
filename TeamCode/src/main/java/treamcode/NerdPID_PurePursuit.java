@@ -176,7 +176,7 @@ public class NerdPID_PurePursuit {
     public static double zPowerPark (double targetAnglePark, double gyroAnglePark, double deltaTimePIDPark){
 
         double kPP = 0.005; //0.005 // new 0.0075 -- old 0.005
-        double kIP = 0.000; //0.002 // new 0.0006 -- old 0.003
+        double kIP = 0.003; //0.002 // new 0.0006 -- old 0.003
         double kDP = 0.000; //0.000 // new 0.001 -- old 0.000
 
         //calculate error (Proportional)
@@ -197,8 +197,8 @@ public class NerdPID_PurePursuit {
         double zPowerPIDP = (propErrorP * kPP) + (intErrorP * kIP) + (derErrorP * kDP);
 
         if (debugFlag) {
-            RobotLog.d("zPowerPark - deltaTime %f, targetAngleDrive %f, gyroAngleDrive %f, propErrorD %f, intErrorD %f, derErrorD %f, zPowerPIDD %f",
-                    deltaTimePIDPark, targetAnglePark, gyroAnglePark, propErrorD, intErrorD, derErrorD, zPowerPIDP);
+            RobotLog.d("zPowerPark - deltaTime %f, targetAngleDrive %f, gyroAngleDrive %f, propErrorP %f, intErrorP %f, derErrorP %f, zPowerPIDP %f",
+                    deltaTimePIDPark, targetAnglePark, gyroAnglePark, propErrorP, intErrorP, derErrorP, zPowerPIDP);
 
         }
 
@@ -235,7 +235,7 @@ public class NerdPID_PurePursuit {
     public static double shortParkPID (double robotDistanceToTarget, double prevRobotDistanceToTarget, double deltaTimePIDMS){
         double kPSP = 0.033;//0.033
         double kISP = 0.250;
-        double kDSP = 0.0075;
+        double kDSP = 0.006;
 
         //calculate error (Proportional)
         propErrorSP = robotDistanceToTarget;
@@ -246,10 +246,10 @@ public class NerdPID_PurePursuit {
         //Calculate change in error (Derivative)
         derErrorSP = (robotDistanceToTarget - prevRobotDistanceToTarget) / deltaTimePIDMS;
 
-        double movementSpeedPIDPow = (propErrorSP * kPSP) + (intErrorSP * kISP) + (derErrorSP * kDSP);
+        double movementSpeedPIDPow = Range.clip(((propErrorSP * kPSP) + (intErrorSP * kISP) + (derErrorSP * kDSP)), -0.4, 0.4);
 
         if (debugFlag) {
-            RobotLog.d("movementSpeedPID - deltaTime %f, robotDistanceToTarget %f, prevRobotDistanceToTarget %f, propErrorMS %f, intErrorMS %f, derErrorMS %f, movementSpeedPIDPow %f",
+            RobotLog.d("shortParkPID - deltaTime %f, robotDistanceToTarget %f, prevRobotDistanceToTarget %f, propErrorMS %f, intErrorMS %f, derErrorMS %f, movementSpeedPIDPow %f",
                     deltaTimePIDMS, robotDistanceToTarget, prevRobotDistanceToTarget, propErrorMS, intErrorMS, derErrorMS, movementSpeedPIDPow);
 
         }
@@ -272,7 +272,7 @@ public class NerdPID_PurePursuit {
         //Calculate change in error (Derivative)
         derErrorMS = (robotDistanceToTarget - prevRobotDistanceToTarget) / deltaTimePIDGTPP;
 
-        double movementSpeedPIDPow = (propErrorMS * kPMS) + (intErrorMS * kIMS) + (derErrorMS * kDMS);
+        double movementSpeedPIDPow = Range.clip(((propErrorMS * kPMS) + (intErrorMS * kIMS) + (derErrorMS * kDMS)), -0.4, 0.4);
 
         if (debugFlag) {
             RobotLog.d("movementSpeedPID - deltaTime %f, robotDistanceToTarget %f, prevRobotDistanceToTarget %f, propErrorMS %f, intErrorMS %f, derErrorMS %f, movementSpeedPIDPow %f",
