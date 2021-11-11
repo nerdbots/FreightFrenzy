@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import org.firstinspires.ftc.teamcode.PurePursuitRobotMovement6;
 
 import treamcode.CurvePoint;
+import treamcode.NerdPID_PurePursuit;
+import treamcode.wobble_Pickup;
 
 import java.util.ArrayList;
 
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 public class PurePursuitOpMode extends LinearOpMode {
 
     private PurePursuitRobotMovement6 myPurePursuitRobotMovement6;
-   // private wobble_Pickup mywobble_Pickup;
+    private wobble_Pickup mywobble_Pickup;
 //    private DetectObjects_Shoot_Class myDetectObjects;
 
     private int ringsNum;
@@ -30,14 +32,14 @@ public class PurePursuitOpMode extends LinearOpMode {
     public void runOpMode() {
         //Create a NerdBOT object
         myPurePursuitRobotMovement6 = new PurePursuitRobotMovement6(this);
-     //   mywobble_Pickup = new wobble_Pickup (this);
+        mywobble_Pickup = new wobble_Pickup (this);
 //        myDetectObjects = new DetectObjects_Shoot_Class(this);
 
         myPurePursuitRobotMovement6.setDebug(debugFlag);
 
         //Initialize Hardware
         myPurePursuitRobotMovement6.initializeHardware();
-    //    mywobble_Pickup.wobbleInit();
+        mywobble_Pickup.wobbleInit();
 //        myDetectObjects.initialize();
         //Initialize the PID Calculators
 
@@ -158,7 +160,7 @@ public class PurePursuitOpMode extends LinearOpMode {
         myPurePursuitRobotMovement6.followCurve(allPoints, 90, 35, 90, 3);
 
 //        sleep(1000);
-        //mywobble_Pickup.beginningDown();
+        mywobble_Pickup.beginningDown();
 
 //        allPoints = new ArrayList<>();
 //        allPoints.add(new CurvePoint(6, 88, 1.0, 0.4, 35, 0, 0.3));
@@ -235,7 +237,7 @@ public class PurePursuitOpMode extends LinearOpMode {
         myPurePursuitRobotMovement6.followCurve(allPoints, 90, 40, 90, 4);
 
 //        sleep(1000);
-     //   mywobble_Pickup.beginningDown();
+        mywobble_Pickup.beginningDown();
 //
 //        allPoints = new ArrayList<>();
 //        allPoints.add(new CurvePoint(-18, 66, 1.0, 0.4, 25, 0, 0.3));
