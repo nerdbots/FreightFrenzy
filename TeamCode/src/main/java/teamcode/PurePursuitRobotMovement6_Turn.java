@@ -920,7 +920,7 @@ public class PurePursuitRobotMovement6_Turn {
     }
 
     public void followCurveArm(ArrayList<CurvePoint> allPoints, double zPowerFF, double distanceToPark, double parkAngleTarget,
-                               double parkRadius, ArmShoulderPositions targetShoulderPosition, FingerPositions targetFingerPosition,
+                               double parkRadius, ArmShoulderPositions targetShoulderPosition, FingerPositions targetFingerPosition, FingerPositions endFingerPosition,
                                double armDelay, double armHoldPositionTime, String motor, double power){
 
         startTime = elapsedTime.seconds();
@@ -1050,13 +1050,16 @@ public class PurePursuitRobotMovement6_Turn {
                 armHoldStartTime = elapsedTime.seconds();
                 RobotLog.d("NERD_11_08 #### FollowCurveArm - Arm Hold Timer Started originalArmTargetPosition %d, currentArmTargetPosition %d, frontEncoder.getCurrentPosition %d",
                         originalArmTargetPosition.getArmTarget(),currentArmTargetPosition.getArmTarget(),frontEncoder.getCurrentPosition() );
-                if(originalArmTargetPosition == ArmShoulderPositions.INTAKE){
-                    leftGrab.setPosition(FingerPositions.INTAKE_READY.getLeftFingerPosition());
-                    rightGrab.setPosition(FingerPositions.INTAKE_READY.getRightFingerPosition());
-                }else {
-                    leftGrab.setPosition(FingerPositions.ENTER_INTAKE.getLeftFingerPosition());
-                    rightGrab.setPosition(FingerPositions.ENTER_INTAKE.getRightFingerPosition());
-                }
+//                if(originalArmTargetPosition == ArmShoulderPositions.INTAKE){
+//                    leftGrab.setPosition(FingerPositions.INTAKE_READY.getLeftFingerPosition());
+//                    rightGrab.setPosition(FingerPositions.INTAKE_READY.getRightFingerPosition());
+//                }else {
+//                    leftGrab.setPosition(FingerPositions.ENTER_INTAKE.getLeftFingerPosition());
+//                    rightGrab.setPosition(FingerPositions.ENTER_INTAKE.getRightFingerPosition());
+//                }
+               leftGrab.setPosition(endFingerPosition.getLeftFingerPosition());
+               rightGrab.setPosition(endFingerPosition.getRightFingerPosition());
+
             }
 
             //ARM End
@@ -1078,6 +1081,12 @@ public class PurePursuitRobotMovement6_Turn {
         runMotor("duckyDisc", 0);
 
 
+    }
+
+    public void setFingerPositions(FingerPositions targetFingerPosition)
+    {
+        this.leftGrab.setPosition(targetFingerPosition.getLeftFingerPosition());
+        this.rightGrab.setPosition(targetFingerPosition.getRightFingerPosition());
     }
 
     public boolean isArmHoldTimeReached(double armHoldTime){
