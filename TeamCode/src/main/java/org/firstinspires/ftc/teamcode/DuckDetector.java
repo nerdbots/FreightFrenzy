@@ -188,7 +188,7 @@ public class DuckDetector
         int avg1, avg2, avg3;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile DuckPosition position = DuckPosition.LEFT;
+        private volatile DuckPosition position = DuckPosition.RIGHT;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
