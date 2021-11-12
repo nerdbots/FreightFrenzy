@@ -1,6 +1,7 @@
 package teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 //import org.firstinspires.ftc.teamcode.DetectObjects_Shoot_Class;
@@ -13,7 +14,7 @@ import treamcode.wobble_Pickup;
 import java.util.ArrayList;
 
 //import Functions.CurvePoint;
-
+@Disabled
 @Autonomous(name="PurePursuitOpMode", group="Linear Opmode")
 
 public class PurePursuitOpMode extends LinearOpMode {

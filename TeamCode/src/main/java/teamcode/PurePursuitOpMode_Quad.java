@@ -10,7 +10,7 @@ import treamcode.CurvePoint;
 import treamcode.wobble_Pickup;
 
 //import Functions.CurvePoint;
-//@Disabled
+@Disabled
 @Autonomous(name="PurePursuitOpMode_Quad", group="Auton")
 
 public class PurePursuitOpMode_Quad extends LinearOpMode {

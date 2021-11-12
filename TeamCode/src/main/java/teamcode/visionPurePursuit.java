@@ -16,7 +16,7 @@ import treamcode.CurvePoint;
 import treamcode.wobble_Pickup;
 
 //import Functions.CurvePoint;
-//@Disabled
+@Disabled
 @Autonomous(name="visionPurePursuit", group="Auton")
 
 public class visionPurePursuit extends LinearOpMode {

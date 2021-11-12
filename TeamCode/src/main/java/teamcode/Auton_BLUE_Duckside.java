@@ -1,20 +1,20 @@
 package teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.ArmShoulderPositions;
 import org.firstinspires.ftc.teamcode.DuckDetector;
+import org.firstinspires.ftc.teamcode.FingerPositions;
 
 import java.util.ArrayList;
-import org.firstinspires.ftc.teamcode.*;
+
 import treamcode.CurvePoint;
 
-@Disabled
-@Autonomous(name="PurePursuitOpMode_Original_Turn", group="Linear Opmode")
 
-public class PurePursuitOpMode_Original_Turn extends LinearOpMode {
+@Autonomous(name="Auton_BLUE_Duckside", group="Linear Opmode")
+
+public class Auton_BLUE_Duckside extends LinearOpMode {
 
     private PurePursuitRobotMovement6_Turn myPurePursuitRobotMovement6_Turn;
 
