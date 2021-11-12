@@ -44,6 +44,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -319,7 +320,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
                 joyX = 1;
                 joyY = 0;
             }else if(gamepad1.a){  //11_09 added below else if block
-                joyX = 1;
+                joyX = -1;
                 joyY = 1;
             }
 
@@ -475,7 +476,9 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
                 }
 
             }
-//
+
+            RobotLog.d("NERDBLUETELEOP Motor powers %f, Looptime %f", armMotorPower, loopTime);
+
             leftArmMotor.setPower(armMotorPower);
             rightArmMotor.setPower(armMotorPower);
 
