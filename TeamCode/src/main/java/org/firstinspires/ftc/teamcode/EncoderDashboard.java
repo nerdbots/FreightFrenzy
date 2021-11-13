@@ -69,7 +69,7 @@ public class EncoderDashboard extends LinearOpMode {
     private DcMotor rearRightMotor;
 
     private DcMotor frontEncoder;
-    private DcMotor rightEncoder;
+private DcMotor rightEncoder;
     private DcMotor leftEncoder;
     private DcMotor backEncoder;
     //Freight Frenzy Arm Variables

@@ -426,7 +426,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
             intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
 
             if(gamepad1.x){
-                duckyDiskMotor.setPower(-0.75);
+                duckyDiskMotor.setPower(0.75);
             }
             //Nov 8 Change
             else {

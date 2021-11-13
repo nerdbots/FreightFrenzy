@@ -81,17 +81,17 @@ public class Auton_RED_DuckSide extends LinearOpMode {
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
-            shippingHubPark = 20;
+            shippingHubPark = 22;
         }
         else if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.LEFT)){
             shoulderPosition = ArmShoulderPositions.LEVEL1;
             armDelay=0.5;
-            shippingHubPark = 22;
+            shippingHubPark = 25;
         }
         else if(duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.RIGHT)){
             shoulderPosition = ArmShoulderPositions.LEVEL3;
             armDelay = 0.0;
-            shippingHubPark = 22;
+            shippingHubPark = 27;
         }
 
 //        if (duckPosition == DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER){
@@ -107,10 +107,17 @@ public class Auton_RED_DuckSide extends LinearOpMode {
 
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(0, 0, 0.4, 0.3, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(20, shippingHubPark, 0.4, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(8, shippingHubPark, 0.4, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(80, 80, 0.4, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, -90, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.ENTER_INTAKE,0.0,0,"none", 0);
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,0,"none", 0);
+
+            myPurePursuitRobotMovement6_Turn.turnRobot(225);
+
+            myPurePursuitRobotMovement6_Turn.setFingerPositions(FingerPositions.ENTER_INTAKE);
+
+            sleep(1000);
+
 //            myPurePursuitRobotMovement6_Turn.turnRobot(-45);
 //            sleep(2000);
 
@@ -152,25 +159,25 @@ public class Auton_RED_DuckSide extends LinearOpMode {
 
 //            sleep(2000);
 
-            myPurePursuitRobotMovement6_Turn.turnRobot(-135);
+            myPurePursuitRobotMovement6_Turn.turnRobot(270);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(20, 22, 0.6, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(-24, 6, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(14, shippingHubPark, 0.6, 0.4, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(-27, 6, 0.6, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-60, 0, 0.6, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, -200, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, 160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
             myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",1,4);
 //            sleep(2000);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-24, 8, 0.8, 0.3, 40, 0, 0.3));
-            allPoints.add(new CurvePoint(0, -4, 0.8, 0.3, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(83, -6, 0.8, 0.3, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(130, -6, 0.8, 0.3, 40, 180, 0.3));
+            allPoints.add(new CurvePoint(-27, 8, 0.8, 0.3, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(0, -4, 0.8, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(83, -6, 0.8, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(130, -6, 0.8, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 35, -180, 10);
+            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 35, 180, 10);
 
             //----------------------------------------------
 
