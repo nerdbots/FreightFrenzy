@@ -115,14 +115,16 @@ public class Auton_RED_WareHouseSide extends LinearOpMode {
             allPoints.add(new CurvePoint(24, -2, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(60, 0, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, 0, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, -180, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(24, -2, 0.4, 0.4, 25, 0, 0.3));
             allPoints.add(new CurvePoint(24, 20, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(24, 60, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 15, 0, 3);
+            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 15, -180, 3);
+
+           // myPurePursuitRobotMovement6_Turn.turnRobot(225);
 
 //            myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",1,4);
 ////            sleep(2000);
