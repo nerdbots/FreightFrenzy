@@ -217,6 +217,26 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
     final double COUNTS_PER_INCH = 194.044;
 
+    //Odometry
+
+    OdometryGlobalCoordinatePositionNERD globalPositionUpdate ;
+    Thread positionThread;
+
+    public void startOdometryThread(){
+        globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
+        positionThread = new Thread(globalPositionUpdate);
+        positionThread.start();
+
+    }
+
+    public void stopOdometryThread(){
+
+        try {
+            positionThread.stop();
+        }catch (Exception e){
+            //Nothing to do
+        }
+    }
 
     /**
      * Constructor to create NerdBOT object
@@ -479,10 +499,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         angleStart = getAngle() + 90;
         angleIncrement = ((parkAngleTarget - angleStart) / (distanceToEndPoint - distanceToPark));
         robotFaceAngle = angleStart;
-
-        OdometryGlobalCoordinatePositionNERD globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
-        Thread positionThread = new Thread(globalPositionUpdate);
-        positionThread.start();
+//11_15
+//        OdometryGlobalCoordinatePositionNERD globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
+//        Thread positionThread = new Thread(globalPositionUpdate);
+//        positionThread.start();
 
         while (this.opmode.opModeIsActive() && !this.opmode.isStopRequested() && !distanceTargetReached(distanceToEndPoint, parkRadius)) {
 
@@ -513,12 +533,15 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         frontRightMotor.setPower(0);
         rearLeftMotor.setPower(0);
         rearRightMotor.setPower(0);
-
-        globalPositionUpdate.stop();
+//11_15
+//        globalPositionUpdate.stop();
     }
 
+
+
     public void followCurveArm(ArrayList<CurvePoint> allPoints, double zPowerFF, double distanceToPark, double parkAngleTarget,
-                               double parkRadius, ArmShoulderPositions initialArmPosition, ArmShoulderPositions targetShoulderPosition, FingerPositions targetFingerPosition, FingerPositions endFingerPosition,
+                               double parkRadius, ArmShoulderPositions initialArmPosition, ArmShoulderPositions targetShoulderPosition,
+                               FingerPositions targetFingerPosition, FingerPositions endFingerPosition,
                                double armDelay, double armHoldPositionTime, String motor, double power){
 
         resetArmVariables();
@@ -537,8 +560,6 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
         startTimeArm = armElapsedTime.seconds();
         oldTimeArm = startTimeArm;
-
-
 
 
         ArmShoulderPositions originalArmTargetPosition = targetShoulderPosition;
@@ -561,10 +582,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
         leftGrab.setPosition(targetFingerPosition.getLeftFingerPosition());
         rightGrab.setPosition(targetFingerPosition.getRightFingerPosition());
-
-        OdometryGlobalCoordinatePositionNERD globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
-        Thread positionThread = new Thread(globalPositionUpdate);
-        positionThread.start();
+//11_15
+//        OdometryGlobalCoordinatePositionNERD globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
+//        Thread positionThread = new Thread(globalPositionUpdate);
+//        positionThread.start();
 
         while (this.opmode.opModeIsActive() && !this.opmode.isStopRequested() &&
                 !distanceTargetReached(distanceToEndPoint, parkRadius) &&
@@ -579,8 +600,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
 //            double[] robotPositionXYV = findDisplacementOptical();
 //
-            double robotXMultiThread = globalPositionUpdate.returnXCoordinate();
-            double robotYMultiThread = globalPositionUpdate.returnYCoordinate();
+             robotXMultiThread = globalPositionUpdate.returnXCoordinate();
+             robotYMultiThread = globalPositionUpdate.returnYCoordinate();
 
             CurvePoint followMe = getFollowPointPath(allPoints, new PointPP(robotXMultiThread, robotYMultiThread),
                     allPoints.get(0).followDistance);
@@ -688,8 +709,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         rearRightMotor.setPower(0);
         runMotor("intake",0);
         runMotor("duckyDisc", 0);
-
-        globalPositionUpdate.stop();
+//11_15
+//        globalPositionUpdate.stop();
 
     }
 

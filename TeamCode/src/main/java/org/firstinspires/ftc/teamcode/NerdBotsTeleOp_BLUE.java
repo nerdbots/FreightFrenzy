@@ -166,6 +166,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
     public static double armKd = 0.0002;
     public static double maxPower = 0.4;
 
+    public ElapsedTime armInitTimer = new ElapsedTime();
 
     public static int armServoPosition = 0;
     public static int grabPosition = 0;
@@ -199,7 +200,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
     public volatile  ArmShoulderPositions currentShoulderPosition =ArmShoulderPositions.INTAKE;
 
     public static double WRIST_SERVO_INCREMENT=0.0;
-    public static double WRIST_SERVO_INCREMENT_STEP = 0.1;
+    public static double WRIST_SERVO_INCREMENT_STEP = 0.01;
 
     //If using FTC Dashboard
 
@@ -251,13 +252,22 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
         rightArmMotor = hardwareMap.get(DcMotor.class, "rightArmMotor");
         leftGrab = hardwareMap.get(Servo.class, "leftGrab");
         rightGrab = hardwareMap.get(Servo.class, "rightGrab");
+
+
+        //Positions to get in the intake. This is initial position we will be at the beginning.
+        armInitTimer.reset();
+        while(armInitTimer.seconds() <= 0.5) {
+            leftArmMotor.setPower(-0.3);
+            rightArmMotor.setPower(-0.3);
+        }
+        leftArmMotor.setPower(0);
+        rightArmMotor.setPower(0);
+
         leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //Positions to get in the intake. This is initial position we will be at the beginning.
 
         leftArmServo.setPosition(0.3);
         rightArmServo.setPosition(0.7);
@@ -320,8 +330,12 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
                 joyX = 1;
                 joyY = 0;
             }else if(gamepad1.a){  //11_09 added below else if block
-                joyX = -1;
-                joyY = 1;
+//                joyX = -1;
+//                joyY = 1;
+
+                //Changes as of 11_15
+                joyX = -0.8;
+                joyY = 0.2;
             }
 
 
@@ -426,7 +440,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
             intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
 
             if(gamepad1.x){
-                duckyDiskMotor.setPower(0.75);
+                duckyDiskMotor.setPower(1.0);
             }
             //Nov 8 Change
             else {

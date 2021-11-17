@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.FingerPositions;
 
 import java.util.ArrayList;
 
+import Odometry.OdometryGlobalCoordinatePositionNERD;
 import treamcode.CurvePoint;
 
 
@@ -53,6 +54,8 @@ public class Auton_BLUE_WareHouseSide_MultiThread extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+
+        myPurePursuitRobotMovement6_Turn_MultiThread.startOdometryThread();
 
 //        telemetry.addData("Analysis",duckDetector.getAnalysis());
 //        telemetry.update();
@@ -137,8 +140,10 @@ public class Auton_BLUE_WareHouseSide_MultiThread extends LinearOpMode {
 
             //----------------------------------------------
 
-
         }
+
+        myPurePursuitRobotMovement6_Turn_MultiThread.stopOdometryThread();
+
     }
 
 }
