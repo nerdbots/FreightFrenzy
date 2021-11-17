@@ -34,10 +34,6 @@ public class Auton_RED_DuckSide extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-
-        telemetry.addData("Vision", "Completed");
-        telemetry.update();
-
         //Create a NerdBOT object
         myPurePursuitRobotMovement6_Turn = new PurePursuitRobotMovement6_Turn(this);
         myPurePursuitRobotMovement6_Turn.setDebug(debugFlag);
@@ -49,17 +45,10 @@ public class Auton_RED_DuckSide extends LinearOpMode {
         duckDetector = new DuckDetector(this);
         duckDetector.initDuckDetector();
 
-
+        telemetry.addData("NerdBOT", "Initialized");
         telemetry.update();
 
         waitForStart();
-
-//        telemetry.addData("Analysis",duckDetector.getAnalysis());
-//        telemetry.update();
-//
-//        duckPosition = duckDetector.getAnalysis();
-//
-//        duckDetector.closeCameraDevice();
 
         duckPosition = duckDetector.getAnalysis();
         telemetry.addData("Analysis",duckDetector.getAnalysis());
@@ -76,8 +65,6 @@ public class Auton_RED_DuckSide extends LinearOpMode {
 
         myPurePursuitRobotMovement6_Turn.resetTimers();
 
-
-//        if(duckPosition.equals("LEFT"))
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
@@ -94,7 +81,6 @@ public class Auton_RED_DuckSide extends LinearOpMode {
             shippingHubPark = 27;
         }
 
-//        if (duckPosition == DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER){
         if (purePursuitPath == 1){
             //First Path to the Square 4
 

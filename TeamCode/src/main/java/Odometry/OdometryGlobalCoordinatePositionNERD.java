@@ -117,7 +117,7 @@ public class OdometryGlobalCoordinatePositionNERD implements Runnable{
 //        prevNormalEncoderWheelPosition = normalEncoderWheelPosition;
 //    }
 
-    private void globalCoordinatePositionUpdateNERD() {
+    private synchronized void globalCoordinatePositionUpdateNERD() {
 
         //First, determine the robot z movement, so encoder ticks caused by z movement can be removed from x, y movement
         robotRotNewOpt = getAngle();

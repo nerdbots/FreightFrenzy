@@ -16,7 +16,7 @@ import treamcode.CurvePoint;
 
 public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
 
-    private PurePursuitRobotMovement6_Turn myPurePursuitRobotMovement6_Turn;
+    private PurePursuitRobotMovement6_Turn_MultiThread myPurePursuitRobotMovement6_Turn_Multithread;
 
     boolean debugFlag = true;
 
@@ -35,31 +35,22 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
     public void runOpMode() {
 
 
-        telemetry.addData("Vision", "Completed");
-        telemetry.update();
-
         //Create a NerdBOT object
-        myPurePursuitRobotMovement6_Turn = new PurePursuitRobotMovement6_Turn(this);
-        myPurePursuitRobotMovement6_Turn.setDebug(debugFlag);
+        myPurePursuitRobotMovement6_Turn_Multithread = new PurePursuitRobotMovement6_Turn_MultiThread(this);
+        myPurePursuitRobotMovement6_Turn_Multithread.setDebug(debugFlag);
 
         //Initialize Hardware
-        myPurePursuitRobotMovement6_Turn.initializeHardware();
-
+        myPurePursuitRobotMovement6_Turn_Multithread.initializeHardware();
 
         duckDetector = new DuckDetector(this);
         duckDetector.initDuckDetector();
-
-
+        telemetry.addData("NerdBOT", "Initialized");
         telemetry.update();
 
         waitForStart();
 
-//        telemetry.addData("Analysis",duckDetector.getAnalysis());
-//        telemetry.update();
-//
-//        duckPosition = duckDetector.getAnalysis();
-//
-//        duckDetector.closeCameraDevice();
+        //Start Odo thread
+        myPurePursuitRobotMovement6_Turn_Multithread.startOdometryThread();
 
         duckPosition = duckDetector.getAnalysis();
         telemetry.addData("Analysis",duckDetector.getAnalysis());
@@ -68,16 +59,15 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
         duckDetector.closeCameraDevice();
 
 
-        myPurePursuitRobotMovement6_Turn.printI();
+        myPurePursuitRobotMovement6_Turn_Multithread.printI();
 
-        myPurePursuitRobotMovement6_Turn.resetITerm();
+        myPurePursuitRobotMovement6_Turn_Multithread.resetITerm();
 
-        myPurePursuitRobotMovement6_Turn.printI();
+        myPurePursuitRobotMovement6_Turn_Multithread.printI();
 
-        myPurePursuitRobotMovement6_Turn.resetTimers();
+        myPurePursuitRobotMovement6_Turn_Multithread.resetTimers();
 
 
-//        if(duckPosition.equals("LEFT"))
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
@@ -94,7 +84,6 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
             shippingHubPark = 27;
         }
 
-//        if (duckPosition == DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER){
         if (purePursuitPath == 1){
             //First Path to the Square 4
 
@@ -110,11 +99,11 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
             allPoints.add(new CurvePoint(8, shippingHubPark, 0.4, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(80, 80, 0.4, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,0,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn.turnRobot(225);
+            myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(225);
 
-            myPurePursuitRobotMovement6_Turn.setFingerPositions(FingerPositions.ENTER_INTAKE);
+            myPurePursuitRobotMovement6_Turn_Multithread.setFingerPositions(FingerPositions.ENTER_INTAKE);
 
             sleep(1000);
 
@@ -159,16 +148,16 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
 
 //            sleep(2000);
 
-            myPurePursuitRobotMovement6_Turn.turnRobot(270);
+            myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(270);
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(14, shippingHubPark, 0.6, 0.4, 25, 0, 0.3));
             allPoints.add(new CurvePoint(-27, 6, 0.6, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-60, 0, 0.6, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurveArm(allPoints, 0, 15, 160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm(allPoints, 0, 15, 160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",1,4);
+            myPurePursuitRobotMovement6_Turn_Multithread.runMotor("duckyDisc",1,4);
 //            sleep(2000);
 
             allPoints = new ArrayList<>();
@@ -177,12 +166,14 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
             allPoints.add(new CurvePoint(83, -6, 0.8, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(130, -6, 0.8, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 35, 180, 10);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurve(allPoints, 0, 35, 180, 10);
 
             //----------------------------------------------
 
 
         }
+        myPurePursuitRobotMovement6_Turn_Multithread.stopOdometryThread();
+
     }
 
 }

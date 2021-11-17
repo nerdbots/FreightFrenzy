@@ -16,7 +16,6 @@ import treamcode.CurvePoint;
 
 public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
 
-//    private PurePursuitRobotMovement6_Turn myPurePursuitRobotMovement6_Turn;
     private PurePursuitRobotMovement6_Turn_MultiThread myPurePursuitRobotMovement6_Turn_MultiThread;
 
 
@@ -38,36 +37,23 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
 
         myPurePursuitRobotMovement6_Turn_MultiThread = new PurePursuitRobotMovement6_Turn_MultiThread(this);
         myPurePursuitRobotMovement6_Turn_MultiThread.setDebug(debugFlag);
-        telemetry.addData("Vision", "Completed");
-        telemetry.update();
-
-//        //Create a NerdBOT object
-//        myPurePursuitRobotMovement6_Turn = new PurePursuitRobotMovement6_Turn(this);
-//        myPurePursuitRobotMovement6_Turn.setDebug(debugFlag);
 
         //Initialize Hardware
         myPurePursuitRobotMovement6_Turn_MultiThread.initializeHardware();
 
-
         duckDetector = new DuckDetector(this);
         duckDetector.initDuckDetector();
-//        duckPosition = duckDetector.getAnalysis();
-//        duckDetector.closeCameraDevice();
-        telemetry.addData("Analysis",duckDetector.getAnalysis());
+
+        telemetry.addData("NerdBOT", "Initialized");
         telemetry.update();
+
 
         waitForStart();
 
+        //Start Odo thread
         myPurePursuitRobotMovement6_Turn_MultiThread.startOdometryThread();
 
-
-//        telemetry.addData("Analysis",duckDetector.getAnalysis());
-//        telemetry.update();
-//
-//        duckPosition = duckDetector.getAnalysis();
-//
-//        duckDetector.closeCameraDevice();
-
+        //Vision to detect duck position
         duckPosition = duckDetector.getAnalysis();
         telemetry.addData("Analysis",duckDetector.getAnalysis());
         telemetry.update();
@@ -75,15 +61,11 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
 
 
         myPurePursuitRobotMovement6_Turn_MultiThread.printI();
-
         myPurePursuitRobotMovement6_Turn_MultiThread.resetITerm();
-
         myPurePursuitRobotMovement6_Turn_MultiThread.printI();
-
         myPurePursuitRobotMovement6_Turn_MultiThread.resetTimers();
 
 
-//        if(duckPosition.equals("LEFT"))
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
@@ -100,7 +82,6 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
             shippingHubPark = 25;
         }
 
-//        if (duckPosition == DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER){
         if (purePursuitPath == 1){
 
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
