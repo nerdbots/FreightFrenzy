@@ -69,7 +69,7 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
-            shippingHubPark = 23;
+            shippingHubPark = 22;
         }
         else if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.LEFT)){
             shoulderPosition = ArmShoulderPositions.LEVEL1;

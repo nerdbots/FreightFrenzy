@@ -100,11 +100,11 @@ public class Auton_BLUE_WareHouseSide_MultiThread extends LinearOpMode {
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(8, shippingHubPark, 0.6, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(15, -20, 0.6, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-30, -2, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(15, -15, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-32, -2, 0.6, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-60, 0, 0.6, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm(allPoints, 0, 15, 180, 8, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm(allPoints, 0, 15, 180, 5, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(-30, -2, 0.4, 0.4, 25, 0, 0.3));

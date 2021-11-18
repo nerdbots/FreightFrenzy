@@ -209,7 +209,7 @@ public class NerdPID_PurePursuit {
     public static double movementSpeedPID (double robotDistanceToTarget, double prevRobotDistanceToTarget, double deltaTimePIDMS){
         double kPMS = 0.033; //old used to be 0.033?
         double kIMS = 0.250;  // old used to be 0.020
-        double kDMS = 0.017; //competition bot = 0.020?
+        double kDMS = 0.006; //0.017
 
         //calculate error (Proportional)
         propErrorMS = robotDistanceToTarget;
@@ -235,7 +235,7 @@ public class NerdPID_PurePursuit {
     public static double shortParkPID (double robotDistanceToTarget, double prevRobotDistanceToTarget, double deltaTimePIDMS){
         double kPSP = 0.033;//0.033
         double kISP = 0.250;
-        double kDSP = 0.006;
+        double kDSP = 0.003;//0.006
 
         //calculate error (Proportional)
         propErrorSP = robotDistanceToTarget;

@@ -821,7 +821,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
         double distanceFromStart = Math.hypot(robotLocationMT.x - robotPositionXStart, robotLocationMT.y - robotPositionYStart);
         double distanceAtStart = Math.hypot(endPointX - robotPositionXStart, endPointY - robotPositionYStart);
-        angleIncrement = (parkAngleTarget - angleStart) / (distanceAtStart - parkDistance);
+        angleIncrement = (parkAngleTarget - angleStart) / (distanceAtStart - parkDistance - 10);
 
         if (angleStart < parkAngleTarget){
             robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + angleStart, angleStart, parkAngleTarget);
