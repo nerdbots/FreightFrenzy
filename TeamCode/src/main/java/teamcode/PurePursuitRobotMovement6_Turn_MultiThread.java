@@ -145,7 +145,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
     double startTimeArm = 0;
     public static double armKp = 0.005;//0.005
     public static double armKi = 0.00;
-    public static double armKd = 0.0002;//0.00005
+    public static double armKd = 0.00025;//0.00005
     public static double maxPowerArm = 0.4;
 
     private ElapsedTime armElapsedTime=new ElapsedTime();

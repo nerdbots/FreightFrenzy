@@ -252,7 +252,11 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
         rightArmMotor = hardwareMap.get(DcMotor.class, "rightArmMotor");
         leftGrab = hardwareMap.get(Servo.class, "leftGrab");
         rightGrab = hardwareMap.get(Servo.class, "rightGrab");
-
+        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
         armInitTimer.reset();
@@ -263,11 +267,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
         leftArmMotor.setPower(0);
         rightArmMotor.setPower(0);
 
-        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         leftArmServo.setPosition(0.3);
         rightArmServo.setPosition(0.7);
@@ -382,7 +382,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
             }
             if (gamepad2.b) {
                 WRIST_SERVO_INCREMENT = 0.0;
-                shoulderPosition = ArmShoulderPositions.LEVEL1;
+                shoulderPosition = ArmShoulderPositions.SHARED_HUB;
 
             }
             if (gamepad2.x) {
