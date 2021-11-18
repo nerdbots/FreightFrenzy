@@ -166,6 +166,7 @@ public class NerdBotsTeleOp_RED extends LinearOpMode {
     public static double maxPower = 0.4;
 
     public ElapsedTime armInitTimer = new ElapsedTime();
+    public ElapsedTime resetArmTimer = new ElapsedTime();
 
     public static int armServoPosition = 0;
     public static int grabPosition = 0;
@@ -251,10 +252,7 @@ public class NerdBotsTeleOp_RED extends LinearOpMode {
         rightArmMotor = hardwareMap.get(DcMotor.class, "rightArmMotor");
         leftGrab = hardwareMap.get(Servo.class, "leftGrab");
         rightGrab = hardwareMap.get(Servo.class, "rightGrab");
-        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
@@ -266,7 +264,10 @@ public class NerdBotsTeleOp_RED extends LinearOpMode {
         leftArmMotor.setPower(0);
         rightArmMotor.setPower(0);
         //Reset encoder to 0
-
+        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftArmServo.setPosition(0.3);
         rightArmServo.setPosition(0.7);
@@ -425,6 +426,8 @@ public class NerdBotsTeleOp_RED extends LinearOpMode {
 
             }
 
+
+
             //Minor Wrist adjustments
 
 
@@ -490,9 +493,24 @@ public class NerdBotsTeleOp_RED extends LinearOpMode {
 
             }
 //
-            leftArmMotor.setPower(armMotorPower);
-            rightArmMotor.setPower(armMotorPower);
-
+            if(gamepad2.right_stick_button) {
+               if(shoulderPosition == ArmShoulderPositions.INTAKE) {
+                   resetArmTimer.reset();
+                   while (resetArmTimer.seconds() <= 0.3) {
+                       leftArmMotor.setPower(-0.3);
+                       rightArmMotor.setPower(-0.3);
+                   }
+                   leftArmMotor.setPower(0);
+                   rightArmMotor.setPower(0);
+                   leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                   rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                   leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                   rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+               }
+            }else {
+                leftArmMotor.setPower(armMotorPower);
+                rightArmMotor.setPower(armMotorPower);
+            }
             if(usingFTCDashboard == true) {
 
                 RIGHT_WRIST_SERVO_POSITION = 1.0 - LEFT_WRIST_SERVO_POSITION;

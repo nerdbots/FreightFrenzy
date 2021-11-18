@@ -167,6 +167,7 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
     public static double maxPower = 0.4;
 
     public ElapsedTime armInitTimer = new ElapsedTime();
+    public ElapsedTime resetArmTimer = new ElapsedTime();
 
     public static int armServoPosition = 0;
     public static int grabPosition = 0;
@@ -252,11 +253,8 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
         rightArmMotor = hardwareMap.get(DcMotor.class, "rightArmMotor");
         leftGrab = hardwareMap.get(Servo.class, "leftGrab");
         rightGrab = hardwareMap.get(Servo.class, "rightGrab");
-        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
         armInitTimer.reset();
@@ -266,7 +264,10 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
         }
         leftArmMotor.setPower(0);
         rightArmMotor.setPower(0);
-
+        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         leftArmServo.setPosition(0.3);
@@ -426,6 +427,8 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
 
             }
 
+
+
             //Minor Wrist adjustments
 
 
@@ -493,8 +496,24 @@ public class NerdBotsTeleOp_BLUE extends LinearOpMode {
 
             RobotLog.d("NERDBLUETELEOP Motor powers %f, Looptime %f", armMotorPower, loopTime);
 
-            leftArmMotor.setPower(armMotorPower);
-            rightArmMotor.setPower(armMotorPower);
+            if(gamepad2.right_stick_button) {
+                if(shoulderPosition == ArmShoulderPositions.INTAKE) {
+                    resetArmTimer.reset();
+                    while (resetArmTimer.seconds() <= 0.3) {
+                        leftArmMotor.setPower(-0.3);
+                        rightArmMotor.setPower(-0.3);
+                    }
+                    leftArmMotor.setPower(0);
+                    rightArmMotor.setPower(0);
+                    leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            }else {
+                leftArmMotor.setPower(armMotorPower);
+                rightArmMotor.setPower(armMotorPower);
+            }
 
             if(usingFTCDashboard == true) {
 
