@@ -58,6 +58,7 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
 
         duckDetector.closeCameraDevice();
 
+        sleep(7000);
 
         myPurePursuitRobotMovement6_Turn_Multithread.printI();
 
@@ -151,20 +152,21 @@ public class Auton_RED_DuckSide_Multithread extends LinearOpMode {
             myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(270);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(14, shippingHubPark, 0.6, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(-27, 6, 0.6, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-60, 0, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(14, shippingHubPark, 0.4, 0.4, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(-28, 7, 0.4, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-60, 0, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm(allPoints, 0, 15, 160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm(allPoints, 0, 10, 160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn_Multithread.runMotor("duckyDisc",1,4);
+            myPurePursuitRobotMovement6_Turn_Multithread.runMotor("duckyDisc",0.8,4);
 //            sleep(2000);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-27, 8, 0.8, 0.3, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(0, -4, 0.8, 0.3, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(83, -6, 0.8, 0.3, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(130, -6, 0.8, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-28, 7, 0.8, 0.3, 30, 0, 0.3));
+            allPoints.add(new CurvePoint(0, 0, 0.8, 0.3, 30, 180, 0.3));
+            allPoints.add(new CurvePoint(40, -3, 0.8, 0.3, 30, 180, 0.3));
+            allPoints.add(new CurvePoint(81, -4, 0.8, 0.3, 30, 180, 0.3));
+            allPoints.add(new CurvePoint(130, -4, 0.8, 0.3, 30, 180, 0.3));
 
             myPurePursuitRobotMovement6_Turn_Multithread.followCurve(allPoints, 0, 35, 180, 10);
 
