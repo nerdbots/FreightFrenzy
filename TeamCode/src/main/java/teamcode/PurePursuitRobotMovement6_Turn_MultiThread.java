@@ -540,7 +540,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
 
     public void followCurveArm(ArrayList<CurvePoint> allPoints, double zPowerFF, double distanceToPark, double parkAngleTarget,
-                               double parkRadius, ArmShoulderPositions initialArmPosition, ArmShoulderPositions targetShoulderPosition,
+                               double parkRadius, ArmShoulderPositions initialShoulderPosition, ArmShoulderPositions targetShoulderPosition,
                                FingerPositions targetFingerPosition, FingerPositions endFingerPosition,
                                double armDelay, double armHoldPositionTime, String motor, double power){
 
@@ -565,7 +565,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         ArmShoulderPositions originalArmTargetPosition = targetShoulderPosition;
         ArmShoulderPositions intermediateArmTargetPosition = ArmShoulderPositions.HOME;
         ArmShoulderPositions currentArmTargetPosition;
-        ArmShoulderPositions previousArmPosition = initialArmPosition;
+        ArmShoulderPositions previousArmPosition = initialShoulderPosition;
 
         RobotLog.d("originalArmTargetPosition %d, intermediateArmTargetPosition %d, targetShoulderPosition %d, previousArmPosition %d",
                 originalArmTargetPosition.getArmTarget(), intermediateArmTargetPosition.getArmTarget(),targetShoulderPosition.getArmTarget(),previousArmPosition.getArmTarget());
@@ -576,7 +576,11 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         if(armDelay >0)
             armDelayTimer = armElapsedTime.seconds();
 
-        currentArmTargetPosition = intermediateArmTargetPosition;
+        if(initialShoulderPosition != targetShoulderPosition) {
+            currentArmTargetPosition = intermediateArmTargetPosition;
+        }else{
+            currentArmTargetPosition = targetShoulderPosition;
+        }
 
         armHoldStartTime = 0.0;
 
@@ -661,18 +665,20 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
             RobotLog.d("originalArmTargetPosition %d, intermediateArmTargetPosition %d, targetShoulderPosition %d, previousArmPosition %d",
                     originalArmTargetPosition.getArmTarget(), intermediateArmTargetPosition.getArmTarget(),targetShoulderPosition.getArmTarget(),previousArmPosition.getArmTarget());
 
-            if(currentArmTargetPosition.getArmTarget() == intermediateArmTargetPosition.getArmTarget()){
+            if(initialShoulderPosition != targetShoulderPosition){
+                if(currentArmTargetPosition == intermediateArmTargetPosition){
 
-                if(isArmTargetReached(currentArmTargetPosition, frontEncoder.getCurrentPosition())){
-                    RobotLog.d("NERD_11_08 #### FollowCurveArm - ArmTarget Reached SWAPPED, originalArmTargetPosition %d, currentArmTargetPosition %d, frontEncoder.getCurrentPosition %d",
+                    if(isArmTargetReached(currentArmTargetPosition, frontEncoder.getCurrentPosition())){
+                        RobotLog.d("NERD_11_08 #### FollowCurveArm - ArmTarget Reached SWAPPED, originalArmTargetPosition %d, currentArmTargetPosition %d, frontEncoder.getCurrentPosition %d",
+                                originalArmTargetPosition.getArmTarget(),currentArmTargetPosition.getArmTarget(),frontEncoder.getCurrentPosition() );
+                        previousArmPosition = currentArmTargetPosition;
+                        currentArmTargetPosition = originalArmTargetPosition;
+                    }
+
+                    RobotLog.d("NERD_11_08 #### FollowCurveArm - Did NOT SWAP originalArmTargetPosition %d, currentArmTargetPosition %d, frontEncoder.getCurrentPosition %d",
                             originalArmTargetPosition.getArmTarget(),currentArmTargetPosition.getArmTarget(),frontEncoder.getCurrentPosition() );
-                    previousArmPosition = currentArmTargetPosition;
-                    currentArmTargetPosition = originalArmTargetPosition;
+
                 }
-
-                RobotLog.d("NERD_11_08 #### FollowCurveArm - Did NOT SWAP originalArmTargetPosition %d, currentArmTargetPosition %d, frontEncoder.getCurrentPosition %d",
-                        originalArmTargetPosition.getArmTarget(),currentArmTargetPosition.getArmTarget(),frontEncoder.getCurrentPosition() );
-
             }
             if((distanceTargetReached(distanceToEndPoint,parkRadius) && isArmTargetReached(originalArmTargetPosition,frontEncoder.getCurrentPosition()))){
                 finalArmTargetReached = true;
