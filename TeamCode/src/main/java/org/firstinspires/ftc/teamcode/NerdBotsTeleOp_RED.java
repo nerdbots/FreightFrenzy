@@ -69,7 +69,7 @@ import treamcode.MathFunctions;
 //@Disabled
 @TeleOp(name="NerdBotsTeleop_RED", group="Final")
 //@Config
-public class NerdBotsTeleOp_RED extends LinearOpMode {
+public class  NerdBotsTeleOp_RED extends LinearOpMode {
 
     //FTC Dashboard
     FtcDashboard ftcDashboard;

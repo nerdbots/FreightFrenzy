@@ -59,6 +59,7 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
         telemetry.update();
         duckDetector.closeCameraDevice();
 
+        sleep(7000);
 
         myPurePursuitRobotMovement6_Turn_MultiThread.printI();
         myPurePursuitRobotMovement6_Turn_MultiThread.resetITerm();
@@ -79,19 +80,20 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
         else if(duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.RIGHT)){
             shoulderPosition = ArmShoulderPositions.LEVEL3;
             armDelay = 0.0;
-            shippingHubPark = 25;
+            shippingHubPark = 27;
         }
 
         if (purePursuitPath == 1){
 
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(0, 0, 0.4, 0.3, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(0, 7, 0.4, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-15, shippingHubPark, 0.4, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-80, 80, 0.4, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,1,"none", 0);
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm(allPoints, 0, 10, -90, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,1,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.turnRobot(315);
+            myPurePursuitRobotMovement6_Turn_MultiThread.turnRobot(-55);
 
             myPurePursuitRobotMovement6_Turn_MultiThread.setFingerPositions(FingerPositions.ENTER_INTAKE);
 
@@ -116,24 +118,24 @@ public class Auton_BLUE_Duckside_Multithread extends LinearOpMode {
 //            myPurePursuitRobotMovement6_Turn.turnRobot(270);
 //            myPurePursuitRobotMovement6_Turn.setFingerPositions(FingerPositions.ENTER_INTAKE);
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.turnRobot(270);
+            myPurePursuitRobotMovement6_Turn_MultiThread.turnRobot(-90);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-15, shippingHubPark, 0.6, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(22, 10, 0.6, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(60, 9, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-15, shippingHubPark, 0.4, 0.4, 25, 0, 0.3));
+            allPoints.add(new CurvePoint(22, 10, 0.4, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(60, 9, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm(allPoints, 0, 15, 200, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm(allPoints, 0, 15, -160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.runMotor("duckyDisc",-1,4);
+            myPurePursuitRobotMovement6_Turn_MultiThread.runMotor("duckyDisc",-0.8,4);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(21, 10, 0.8, 0.3, 40, 0, 0.3));
+            allPoints.add(new CurvePoint(22, 10, 0.8, 0.3, 40, 0, 0.3));
             allPoints.add(new CurvePoint(-24, -1, 0.8, 0.3, 40, 180, 0.3));
-            allPoints.add(new CurvePoint(-83, -2, 0.8, 0.3, 40, 180, 0.3));
+            allPoints.add(new CurvePoint(-87, -2, 0.8, 0.3, 40, 180, 0.3));
             allPoints.add(new CurvePoint(-130, -2, 0.8, 0.3, 40, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurve(allPoints, -0.25, 35, 180, 9);
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurve(allPoints, -0.25, 35, -180, 9);
 
 
         }

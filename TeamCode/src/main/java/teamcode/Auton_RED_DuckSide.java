@@ -1,6 +1,7 @@
 package teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.ArmShoulderPositions;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 import treamcode.CurvePoint;
 
-
+@Disabled
 @Autonomous(name="Auton_RED_DuckSide", group="Linear Opmode")
 
 public class Auton_RED_DuckSide extends LinearOpMode {

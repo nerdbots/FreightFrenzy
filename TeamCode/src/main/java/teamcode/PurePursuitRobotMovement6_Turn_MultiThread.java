@@ -866,8 +866,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         rearLeftMotor.setPower(motorSpeedCommand[2]);
 
         if (debugFlag) {
-            RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f",
-                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y);
+            RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, robotFaceAngle %f, robotAngle %f",
+                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, robotFaceAngle, zPIDAngle);
         }
 
 
@@ -967,8 +967,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
 
         // channels to record to debug optical encoder field centric driving
         if (debugFlag) {
-            RobotLog.d("goToPositionEndPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f",
-                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y);
+            RobotLog.d("goToPositionEndPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, targetParkAngle %f, robotAngle %f",
+                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, targetParkAngle, zPIDAngle);
         }
 
     }
