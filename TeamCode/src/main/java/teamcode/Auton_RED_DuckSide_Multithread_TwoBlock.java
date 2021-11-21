@@ -106,7 +106,7 @@ public class Auton_RED_DuckSide_Multithread_TwoBlock extends LinearOpMode {
             allPoints.add(new CurvePoint(-28, 7, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-60, 0, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm(allPoints, 0, 10, 160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm(allPoints, 0, 10, 150, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
 
             myPurePursuitRobotMovement6_Turn_Multithread.runMotor("duckyDisc",0.8,4);
 
