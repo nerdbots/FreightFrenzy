@@ -182,7 +182,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
     //For TURN PID
 
     boolean onTarget = false;
-    public static double turnPIDKp = 0.0075;
+    public static double turnPIDKp = 0.015;
     public static double turnPIDKi = 0.0006;
     public static double turnPIDKd = 0.001;
 
@@ -223,7 +223,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
     Thread positionThread;
 
     public void startOdometryThread(){
-        globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
+        globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 50);
         positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
@@ -1159,9 +1159,9 @@ public class PurePursuitRobotMovement6_Turn_MultiThread {
         rearLeftMotor.setPower(0);
     }
 
-    private boolean turnPIDAngleTargetReached(double targetAngle){
+    private boolean turnPIDAngleTargetReached(double targetAngleR){
         boolean angleTargetReached = false;
-        if ((Math.abs(robotTargetAngle - getAngle()) < turnPIDangletolerance) || ((elapsedTime.seconds() - turnPIDtimer) >= 1.0)){
+        if ((Math.abs(targetAngleR - 90 - getAngle()) < turnPIDangletolerance) || ((elapsedTime.seconds() - turnPIDtimer) >= 1.0)){
             angleTargetReached = true;
         }
         return angleTargetReached;
