@@ -8,7 +8,7 @@ public  enum ArmShoulderPositions {
     LEVEL3(600,0.3,0.7,0.3),
     TSE_DROP(600,0.3,0.62,0.38),
     GROUND_PICKUP(1000,0.3,0.63,0.37),
-    HOME(100,0.2,0.15,0.85),
+    HOME(100,0.3,0.15,0.85),
     SHARED_HUB(1000, 0.3, 0.28,0.72);
 
     private  final int armTarget;
