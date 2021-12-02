@@ -102,14 +102,14 @@ public class Auton_BLUE_DuckSide_Multithread_TwoBlock_V2 extends LinearOpMode {
 
 
 
-            myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(-90);
+//            myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(-90);
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(-15, shippingHubPark, 0.4, 0.4, 25, 0, 0.3));
             allPoints.add(new CurvePoint(22, 10, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(60, 9, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 15, -160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 15, -160, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,1, 0,"none", 0);
 
             myPurePursuitRobotMovement6_Turn_Multithread.runMotor("duckyDisc",-0.8,4);
 
@@ -137,7 +137,7 @@ public class Auton_BLUE_DuckSide_Multithread_TwoBlock_V2 extends LinearOpMode {
 
             sleep(500);
 
-            myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(-75);
+           // myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(-75);
 
 
             allPoints = new ArrayList<>();
@@ -147,7 +147,7 @@ public class Auton_BLUE_DuckSide_Multithread_TwoBlock_V2 extends LinearOpMode {
             allPoints.add(new CurvePoint(-79, 0, 0.6, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-115, 0, 0.6, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 15, -180, 7, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 15, -180, 7, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,1, 0,"none", 0);
 
             //----------------------------------------------
 
