@@ -753,8 +753,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
         boolean finalArmTargetReached = false;
         double armDelayStartTime = 0.0;
-        if(armDelay >0)
+        if(armDelay >0) {
             armDelayStartTime = armElapsedTimeForDelay.seconds();
+        }
+        boolean armDelayCompleted = false;
 
         //If we do not want to move the arm, no need to go home. Else, we always go to HOME position first.
         if(initialShoulderPosition == targetShoulderPosition) {
@@ -811,7 +813,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 if(armElapsedTimeForDelay.seconds() - armDelayStartTime <= armDelay){
                     currentArmTargetPosition = initialShoulderPosition;
                 }else{
-                    currentArmTargetPosition=intermediateArmTargetPosition;
+                    if(!armDelayCompleted) {
+                        currentArmTargetPosition = intermediateArmTargetPosition;
+                        armDelayCompleted = true;
+                    }
                 }
             }
 
