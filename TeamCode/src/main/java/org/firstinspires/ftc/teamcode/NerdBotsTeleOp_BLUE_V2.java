@@ -227,6 +227,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
 
 
+
     @Override
     public void runOpMode() {
 
@@ -435,6 +436,10 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
             }
 
+            if(gamepad2.left_stick_button) {
+                WRIST_SERVO_INCREMENT = 0.0;
+                shoulderPosition = ArmShoulderPositions.LEVEL1;
+            }
 
 
             //Minor Wrist adjustments

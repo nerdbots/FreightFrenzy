@@ -2,7 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 public  enum FingerPositions {
 
-    ENTER_INTAKE(0.53,0.55),
+//    ENTER_INTAKE(0.53,0.55),
+    ENTER_INTAKE(0.5, 0.5),
     INTAKE_READY(0.57,0.51),
     GRAB(0.5,0.65),
     RELEASE(0.6,0.5);
