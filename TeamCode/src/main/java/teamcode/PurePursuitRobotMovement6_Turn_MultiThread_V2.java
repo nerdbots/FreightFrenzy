@@ -27,6 +27,7 @@ import Odometry.OdometryGlobalCoordinatePositionNERD;
 import core.PointPP;
 import treamcode.CurvePoint;
 import treamcode.MathFunctions;
+import treamcode.MathFunctions2;
 import treamcode.NerdPID_PurePursuit;
 import treamcode.NerdVelocityFollowing;
 
@@ -210,6 +211,16 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     double maxVelocity = 0.0;
     double maxAcceleration = 0.0;
 
+
+    //Pure Pursuit Path Counting Functions
+    int pL; //Path Location indicator for pure pursuit
+    int pLf; //Next path point indicator for pure pursuit
+    boolean distanceReached = false;
+    boolean distanceStarted = false;
+    double distanceToPointOld = 0;
+
+
+    //Wizards.exe odometry
     final double COUNTS_PER_INCH = 194.044;
 
     //Odometry
@@ -218,7 +229,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     Thread positionThread;
 
     public void startOdometryThread(){
-        globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 50);
+        globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
         positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
@@ -494,6 +505,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         angleStart = getAngle() + 90;
         angleIncrement = ((parkAngleTarget - angleStart) / (distanceToEndPoint - distanceToPark));
         robotFaceAngle = angleStart;
+        pL = 0;
 //11_15
 //        OdometryGlobalCoordinatePositionNERD globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
 //        Thread positionThread = new Thread(globalPositionUpdate);
@@ -504,8 +516,26 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             robotXMultiThread = globalPositionUpdate.returnXCoordinate();
             robotYMultiThread = globalPositionUpdate.returnYCoordinate();
 
+            CurvePoint startSegment1 = allPoints.get(pL);
+            CurvePoint endSegment1 = allPoints.get(pL + 1);
+
+            ArrayList<PointPP> perpendicularIntersection1 = MathFunctions2.pathDistance(new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.toPoint(), endSegment1.toPoint());
+
+            for(PointPP thisIntersection1 : perpendicularIntersection1){
+                double pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
+                double distanceToPoint = Math.sqrt(((endSegment1.x - thisIntersection1.x) * (endSegment1.x - thisIntersection1.x)) + ((endSegment1.y - thisIntersection1.y) * (endSegment1.y - thisIntersection1.y)));
+
+                if (distanceToPoint < (pathSegment1Length / 10) && distanceToPoint < distanceToPointOld){
+                    distanceReached = true;
+                    pL = pL + 1;
+                }else{
+                    distanceReached = false;
+                }
+                distanceToPointOld = distanceToPoint;
+            }
+
             CurvePoint followMe = getFollowPointPath(allPoints, new PointPP(robotXMultiThread, robotYMultiThread),
-                    allPoints.get(0).followDistance);
+                    allPoints.get(0).followDistance, pL);
 
             CurvePoint endPoint = getEndPoint(allPoints, new PointPP(robotXMultiThread, robotYMultiThread),
                     allPoints.get(0).followDistance);
@@ -519,7 +549,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 goToPositionEndPP(endPoint.x, endPoint.y, 1.0, parkAngleTarget, 0.2, distanceToPark, new PointPP(robotXMultiThread, robotYMultiThread));
             }
             else {
-                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y, new PointPP(robotXMultiThread, robotYMultiThread));
+                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y, new PointPP(robotXMultiThread, robotYMultiThread), followMe.slowDownTurnAmount);
             }
 
 
@@ -733,6 +763,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         angleStart = getAngle() + 90;
         angleIncrement = ((parkAngleTarget - angleStart) / (distanceToEndPoint - distanceToPark));
         robotFaceAngle = angleStart;
+        pL = 0;
 
         //ARM 11_08
 
@@ -753,8 +784,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
         boolean finalArmTargetReached = false;
         double armDelayStartTime = 0.0;
-        if(armDelay >0)
+        if(armDelay >0) {
             armDelayStartTime = armElapsedTimeForDelay.seconds();
+        }
+        boolean armDelayCompleted = false;
 
         //If we do not want to move the arm, no need to go home. Else, we always go to HOME position first.
         if(initialShoulderPosition == targetShoulderPosition) {
@@ -786,8 +819,26 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             robotXMultiThread = globalPositionUpdate.returnXCoordinate();
             robotYMultiThread = globalPositionUpdate.returnYCoordinate();
 
+            CurvePoint startSegment1 = allPoints.get(pL);
+            CurvePoint endSegment1 = allPoints.get(pL + 1);
+
+            ArrayList<PointPP> perpendicularIntersection1 = MathFunctions2.pathDistance(new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.toPoint(), endSegment1.toPoint());
+
+            for(PointPP thisIntersection1 : perpendicularIntersection1){
+                double pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
+                double distanceToPoint = Math.sqrt(((endSegment1.x - thisIntersection1.x) * (endSegment1.x - thisIntersection1.x)) + ((endSegment1.y - thisIntersection1.y) * (endSegment1.y - thisIntersection1.y)));
+
+                if (distanceToPoint < (pathSegment1Length / 10) && distanceToPoint < distanceToPointOld){
+                    distanceReached = true;
+                    pL = pL + 1;
+                }else{
+                    distanceReached = false;
+                }
+                distanceToPointOld = distanceToPoint;
+            }
+
             CurvePoint followMe = getFollowPointPath(allPoints, new PointPP(robotXMultiThread, robotYMultiThread),
-                    allPoints.get(0).followDistance);
+                    allPoints.get(0).followDistance, pL);
 
             CurvePoint endPoint = getEndPoint(allPoints, new PointPP(robotXMultiThread, robotYMultiThread),
                     allPoints.get(0).followDistance);
@@ -801,7 +852,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 goToPositionEndPP(endPoint.x, endPoint.y, 1.0, parkAngleTarget, 0.2, distanceToPark, new PointPP(robotXMultiThread, robotYMultiThread));
             }
             else {
-                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y, new PointPP(robotXMultiThread, robotYMultiThread));
+                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y, new PointPP(robotXMultiThread, robotYMultiThread), followMe.slowDownTurnAmount);
             }
 
             //If there is a delay requested, we stay at the initial position until the requested time.
@@ -811,7 +862,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 if(armElapsedTimeForDelay.seconds() - armDelayStartTime <= armDelay){
                     currentArmTargetPosition = initialShoulderPosition;
                 }else{
-                    currentArmTargetPosition=intermediateArmTargetPosition;
+                    if(!armDelayCompleted) {
+                        currentArmTargetPosition = intermediateArmTargetPosition;
+                        armDelayCompleted = true;
+                    }
                 }
             }
 
@@ -933,8 +987,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     }
 
 
-    private CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, PointPP robotLocation, double followRadius){
-        CurvePoint followMe = new CurvePoint(pathPoints.get(0));
+    private CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, PointPP robotLocation, double followRadius, int pLf){
+        CurvePoint followMe = new CurvePoint(pathPoints.get(pLf));
 
         for(int i = 0; i < pathPoints.size() - 1; i++){
             CurvePoint startLine = pathPoints.get(i);
@@ -987,7 +1041,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
 
     public void goToPositionPP(double x, double y, double movementSpeed, double zPowerFeedForward, double turnSpeed, double parkAngleTarget, double parkDistance,
-                               double robotPositionXStart, double robotPositionYStart, double endPointX, double endPointY, PointPP robotLocationMT){
+                               double robotPositionXStart, double robotPositionYStart, double endPointX, double endPointY, PointPP robotLocationMT, double robotPPAngle){
 
         currentTime = elapsedTime.seconds();
         loopTime = currentTime - oldTime;
@@ -1017,8 +1071,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         }
 
         zPIDAngle = 90 + getAngle();
-        robotTurnSpeed = NerdPID_PurePursuit.zPowerDrive(robotFaceAngle, zPIDAngle, loopTime);
-
+//        robotTurnSpeed = NerdPID_PurePursuit.zPowerDrive(robotFaceAngle, zPIDAngle, loopTime);
+        robotTurnSpeed = NerdPID_PurePursuit.zPowerDrive(robotPPAngle, zPIDAngle, loopTime);
         double robotTurnSpeedFF = Range.clip((zPowerStart + zPowerIncrease), -0.5, 0);
         zPowerStart = robotTurnSpeedFF;
 
