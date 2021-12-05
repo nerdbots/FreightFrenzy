@@ -52,6 +52,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+
 
 import treamcode.MathFunctions;
 
@@ -87,6 +93,8 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     private DcMotor duckyDiskMotor;
     private DcMotor intakeMotor;
 
+    ColorSensor colorSensor;
+    RevBlinkinLedDriver blinkinLedDriver;
 
 
     //variables for the gyro code
@@ -147,6 +155,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 
 
     boolean isSlowMode = false;
+    boolean blockIsIn = false;
 
     //Freight Frenzy Arm Variables
 
@@ -184,7 +193,8 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     double WristjoyY=0;
 
     public static double duckyDiskPowerNEW;
-    public static double duckyDiskGain = 0.65;
+//    public static double duckyDiskGain = 0.995;
+    public static double duckyDiskGain = 0.9;
     public static double duckyDiskSeedPower = 0.02;
 
     double propError = 0;
@@ -242,6 +252,9 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 
         duckyDiskMotor = hardwareMap.get(DcMotor.class, "Ducky_Disk");
         intakeMotor = hardwareMap.get(DcMotor.class, "Intake");
+
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
         //initialize the gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -315,6 +328,30 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            RevBlinkinLedDriver.BlinkinPattern pattern;
+
+            Telemetry.Item patternName;
+            Telemetry.Item display;
+            Deadline ledCycleDeadline;
+            Deadline gamepadRateLimit;
+
+            int light = colorSensor.alpha();
+            if(light > 200){
+                blockIsIn = true;
+            }
+            else if(light < 200){
+                blockIsIn = false;
+            }
+            if(blockIsIn == false) {
+
+                pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                blinkinLedDriver.setPattern(pattern);
+            }
+
+            else if(blockIsIn == true) {
+                pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                blinkinLedDriver.setPattern(pattern);
+            }
             previousShoulderPosition = shoulderPosition;
 
             currentTime = elapsedTime.seconds();
@@ -478,9 +515,14 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
                 duckyDiskPowerNEW = Math.pow(duckyDiskPowerNEW, duckyDiskGain);
             }
             else {
-                duckyDiskPowerNEW = -duckyDiskSeedPower;
+                duckyDiskPowerNEW = duckyDiskSeedPower;
             }
-            duckyDiskMotor.setPower(-duckyDiskPowerNEW);
+            if(duckyDiskPowerNEW != duckyDiskSeedPower) {
+                duckyDiskMotor.setPower(-duckyDiskPowerNEW);
+            }
+            else {
+                duckyDiskMotor.setPower(0);
+            }
             telemetry.addData("ducky disk power", duckyDiskPowerNEW)
 ;            //Minor Wrist adjustments
             telemetry.update();

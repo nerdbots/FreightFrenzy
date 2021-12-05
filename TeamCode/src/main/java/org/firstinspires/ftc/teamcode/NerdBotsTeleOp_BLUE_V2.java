@@ -52,8 +52,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import treamcode.MathFunctions;
+
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -87,15 +93,15 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     private DcMotor duckyDiskMotor;
     private DcMotor intakeMotor;
 
-
-
+    RevBlinkinLedDriver blinkinLedDriver;
+    ColorSensor colorSensor;
     //variables for the gyro code
     Orientation angles;
     Acceleration gravity;
     Orientation lastAngles = new Orientation();
     double globalAngle = 0.0;
 
-
+    boolean blockIsIn;
     //create some timers
     private ElapsedTime ZPIDTime = new ElapsedTime();
     private ElapsedTime PIDTime = new ElapsedTime();
@@ -143,7 +149,6 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
     double joyX = 0;
     double joyY = 0;
-
 
 
     boolean isSlowMode = false;
@@ -210,7 +215,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     public static double ARM_TARGET=0;
     public static double MAX_POWER = 0.4;
     public static double INTAKE_TO_HOME_MAX_POWER = 0.2; //Change this to alter the max power from HOME to intake and intake to home positions
-    public static double LEVEL3_TO_HOME_MAX_POWER = 0.3; //Change this to alter max power from LEVEL3 to HOME.
+    public static double LEVEL3_TO_HOME_MAX_POWER = 0.25; //Change this to alter max power from LEVEL3 to HOME.
     public static double LEFT_WRIST_SERVO_POSITION=0.0;
     public static double RIGHT_WRIST_SERVO_POSITION=1.0;
     public static double LEFT_FINGER_SERVO_POSITION=0.53;
@@ -225,6 +230,11 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     double MAX_DUCK_DISK_POWER = 1.0;
     double duckyDiskpower = DUCK_DISK_STARTING_POWER;
 
+
+    public static double duckyDiskPowerNEW;
+//    public static double duckyDiskGain = 0.995;
+    public static double duckyDiskGain = 0.9;
+    public static double duckyDiskSeedPower = 0.02;
 
 
 
@@ -241,6 +251,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
         duckyDiskMotor = hardwareMap.get(DcMotor.class, "Ducky_Disk");
         intakeMotor = hardwareMap.get(DcMotor.class, "Intake");
+
+
         //initialize the gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -264,6 +276,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
         rightArmMotor = hardwareMap.get(DcMotor.class, "rightArmMotor");
         leftGrab = hardwareMap.get(Servo.class, "leftGrab");
         rightGrab = hardwareMap.get(Servo.class, "rightGrab");
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
         leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
@@ -313,6 +327,38 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            RevBlinkinLedDriver.BlinkinPattern pattern;
+
+            Telemetry.Item patternName;
+            Telemetry.Item display;
+            Deadline ledCycleDeadline;
+            Deadline gamepadRateLimit;
+
+
+            int light = colorSensor.alpha();
+
+            pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriver.setPattern(pattern);
+            if(light > 200){
+                blockIsIn = true;
+            }
+            else if(light < 200){
+                blockIsIn = false;
+            }
+
+            if(blockIsIn == false) {
+
+                pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                blinkinLedDriver.setPattern(pattern);
+            }
+
+            else if(blockIsIn == true) {
+
+                pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                blinkinLedDriver.setPattern(pattern);
+                fingerPosition = FingerPositions.GRAB;
+                shoulderPosition = ArmShoulderPositions.HOME;
+            }
             previousShoulderPosition = shoulderPosition;
 
             currentTime = elapsedTime.seconds();
@@ -455,17 +501,35 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
             intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
 
-            if(gamepad1.x){
-                duckyDiskpower += DUCK_DISK_POWER_INCREMENT ;
-                if (duckyDiskpower >= MAX_DUCK_DISK_POWER ) {
-                    duckyDiskpower = MAX_DUCK_DISK_POWER;
-                }
-                duckyDiskMotor.setPower(duckyDiskpower);
+//            if(gamepad1.x){
+//                duckyDiskpower += DUCK_DISK_POWER_INCREMENT ;
+//                if (duckyDiskpower >= MAX_DUCK_DISK_POWER ) {
+//                    duckyDiskpower = MAX_DUCK_DISK_POWER;
+//                }
+//                duckyDiskMotor.setPower(duckyDiskpower);
+//            }
+//            else {
+//                duckyDiskMotor.setPower(0);
+//                duckyDiskpower = DUCK_DISK_STARTING_POWER;
+//            }
+
+            if(gamepad1.x) {
+                duckyDiskPowerNEW = Math.pow(duckyDiskPowerNEW, duckyDiskGain);
+            }
+            else {
+                duckyDiskPowerNEW = duckyDiskSeedPower;
+            }
+
+            if(duckyDiskPowerNEW != duckyDiskSeedPower) {
+                duckyDiskMotor.setPower(duckyDiskPowerNEW);
             }
             else {
                 duckyDiskMotor.setPower(0);
-                duckyDiskpower = DUCK_DISK_STARTING_POWER;
             }
+
+            telemetry.addData("ducky disk power", duckyDiskPowerNEW)
+            ;            //Minor Wrist adjustments
+            telemetry.update();
 
             //Minor Wrist adjustments
 
@@ -766,6 +830,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
         //using the PID
         ZPID(getAngle(), ZTar, ZkP, ZkI, ZkD);
+
 
     }
 }
