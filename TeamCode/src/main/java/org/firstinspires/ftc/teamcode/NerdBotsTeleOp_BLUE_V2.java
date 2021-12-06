@@ -52,8 +52,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import treamcode.MathFunctions;
+
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -87,15 +93,15 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     private DcMotor duckyDiskMotor;
     private DcMotor intakeMotor;
 
-
-
+    RevBlinkinLedDriver blinkinLedDriver;
+    ColorSensor colorSensor;
     //variables for the gyro code
     Orientation angles;
     Acceleration gravity;
     Orientation lastAngles = new Orientation();
     double globalAngle = 0.0;
 
-
+    boolean blockIsIn;
     //create some timers
     private ElapsedTime ZPIDTime = new ElapsedTime();
     private ElapsedTime PIDTime = new ElapsedTime();
@@ -143,7 +149,6 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
     double joyX = 0;
     double joyY = 0;
-
 
 
     boolean isSlowMode = false;
@@ -241,6 +246,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
         duckyDiskMotor = hardwareMap.get(DcMotor.class, "Ducky_Disk");
         intakeMotor = hardwareMap.get(DcMotor.class, "Intake");
+
+
         //initialize the gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -264,6 +271,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
         rightArmMotor = hardwareMap.get(DcMotor.class, "rightArmMotor");
         leftGrab = hardwareMap.get(Servo.class, "leftGrab");
         rightGrab = hardwareMap.get(Servo.class, "rightGrab");
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
         leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Positions to get in the intake. This is initial position we will be at the beginning.
@@ -313,6 +322,34 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            RevBlinkinLedDriver.BlinkinPattern pattern;
+
+            Telemetry.Item patternName;
+            Telemetry.Item display;
+            Deadline ledCycleDeadline;
+            Deadline gamepadRateLimit;
+
+
+            int light = colorSensor.alpha();
+
+            pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriver.setPattern(pattern);
+            if(light > 200){
+                blockIsIn = true;
+            }
+            else if(light < 200){
+                blockIsIn = false;
+            }
+            if(blockIsIn == false) {
+
+                pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                blinkinLedDriver.setPattern(pattern);
+            }
+
+            else if(blockIsIn == true) {
+                pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                blinkinLedDriver.setPattern(pattern);
+            }
             previousShoulderPosition = shoulderPosition;
 
             currentTime = elapsedTime.seconds();
@@ -766,6 +803,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
         //using the PID
         ZPID(getAngle(), ZTar, ZkP, ZkI, ZkD);
+
 
     }
 }

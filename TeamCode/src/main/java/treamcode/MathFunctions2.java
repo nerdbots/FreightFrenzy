@@ -105,7 +105,7 @@ public class MathFunctions2 {
     }
 
     public static ArrayList<PointPP> pathDistance (PointPP circleCenter,
-                                                   PointPP linePoint1, PointPP linePoint2) {
+                                                   PointPP linePoint1, PointPP linePoint2, PointPP robotTarget) {
 
         if (Math.abs(linePoint1.y - linePoint2.y) < 0.003) {
             linePoint1.y = linePoint2.y + 0.007;
@@ -117,48 +117,22 @@ public class MathFunctions2 {
             linePoint1.x = linePoint2.x + 0.007;
         }
 
-//        if (Math.abs(linePoint2a.y - linePoint3.y) < 0.003) {
-//            linePoint2a.y = linePoint3.y + 0.007;
-//
-//
-//        }
-//
-//        if (Math.abs(linePoint2a.x - linePoint3.x) < 0.003) {
-//            linePoint2a.x = linePoint3.x + 0.007;
-//        }
-
-
 
         ArrayList<PointPP> intersectionPoints = new ArrayList<>();
 
-        double a = linePoint1.y - linePoint2.y;
-        double b = linePoint2.x - linePoint1.x;
-        double c = ((linePoint1.x - linePoint2.x) * linePoint1.y) + ((linePoint2.y - linePoint1.y) * linePoint1.x);
+        double x1 = linePoint1.x;
+        double y1 = linePoint1.y;
+        double x2 = linePoint2.x;
+        double y2 = linePoint2.y;
+        double x3 = circleCenter.x;
+        double y3 = circleCenter.y;
+        double pSlope = - (robotTarget.x - circleCenter.x) / (robotTarget.y - circleCenter.y);
+        double x4 = circleCenter.x + 20;
+        double y4 = (pSlope * 20) + circleCenter.y;
 
-        double slope = (linePoint2.y - linePoint1.y) / (linePoint2.x - linePoint1.x);
-        double pSlope = -(linePoint2.x - linePoint1.x) / (linePoint2.y - linePoint1.y);
-
-        double j = -pSlope;
-        double k = 1;
-        double l = (pSlope * circleCenter.x) - circleCenter.y;
-
-        double xIntersection1 = ((c * k) - (b * l)) / ((b * j) - (a * k));
-        double yIntersection1 = ((a * l) - (c * j)) / ((b * j) - (a * k));
-
-//        double d = linePoint2a.y - linePoint3.y;
-//        double e = linePoint3.x - linePoint2a.x;
-//        double f = ((linePoint2a.x - linePoint3.x) * linePoint2a.y) + ((linePoint3.y - linePoint2a.y) * linePoint2a.x);
-//
-//        double slope2 = (linePoint3.y - linePoint2a.y) / (linePoint3.x - linePoint2a.x);
-//        double pSlope2 = -(linePoint3.x - linePoint2a.x) / (linePoint3.y - linePoint2a.y);
-//
-//        double x = -pSlope2;
-//        double y = 1;
-//        double z = (pSlope * circleCenter.x) - circleCenter.y;
-//
-//        double xIntersection2 = ((f * y) - (e * z)) / ((e * x) - (d * y));
-//        double yIntersection2 = ((d * z) - (f * x)) / ((e * x) - (d * y));
-
+        double D = ((x1 - x2) * (y3 - y4)) - ((y1 - y2) * (x3 - x4));
+        double xIntersection1 = ((((x1 * y2) - (y1 * x2)) * (x3 - x4)) - ((x1 - x2) * ((x3 * y4) - (y3 * x4)))) / D;
+        double yIntersection1 = ((((x1 * y2) - (y1 * x2)) * (y3 - y4)) - ((y1 - y2) * ((x3 * y4) - (y3 * x4)))) / D;
 
         intersectionPoints.add(new PointPP(xIntersection1, yIntersection1));
 
