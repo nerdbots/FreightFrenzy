@@ -221,7 +221,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     public static double LEFT_FINGER_SERVO_POSITION=0.53;
     public static double RIGHT_FINGER_SERVO_POSITION=0.55;
 
-    //Freight Frenzy Arm Variables
+    //Freigh Frenzy Arm Variables
 
     //Duck Disk RampUp/Down
 
@@ -235,6 +235,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 //    public static double duckyDiskGain = 0.995;
     public static double duckyDiskGain = 0.9;
     public static double duckyDiskSeedPower = 0.02;
+
 
 
 
@@ -356,8 +357,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
                 pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
                 blinkinLedDriver.setPattern(pattern);
-                fingerPosition = FingerPositions.GRAB;
-                shoulderPosition = ArmShoulderPositions.HOME;
+//                fingerPosition = FingerPositions.GRAB;
+//                shoulderPosition = ArmShoulderPositions.HOME;
             }
             previousShoulderPosition = shoulderPosition;
 
@@ -614,10 +615,11 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
                 LEFT_FINGER_SERVO_POSITION = fingerPosition.getLeftFingerPosition();
                 RIGHT_FINGER_SERVO_POSITION = fingerPosition.getRightFingerPosition();
             }
-            leftArmServo.setPosition(LEFT_WRIST_SERVO_POSITION + WRIST_SERVO_INCREMENT);
-            rightArmServo.setPosition(RIGHT_WRIST_SERVO_POSITION - WRIST_SERVO_INCREMENT);
             leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
             rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
+            leftArmServo.setPosition(LEFT_WRIST_SERVO_POSITION + WRIST_SERVO_INCREMENT);
+            rightArmServo.setPosition(RIGHT_WRIST_SERVO_POSITION - WRIST_SERVO_INCREMENT);
+
 
             if(shoulderPosition.equals(ArmShoulderPositions.INTAKE) && fingerPosition.equals(FingerPositions.ENTER_INTAKE) ){
                 leftGrab.setPosition(FingerPositions.INTAKE_READY.getLeftFingerPosition());

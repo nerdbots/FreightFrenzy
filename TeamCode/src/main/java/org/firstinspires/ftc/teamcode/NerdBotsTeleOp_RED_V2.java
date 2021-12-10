@@ -507,16 +507,10 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 //                duckyDiskMotor.setPower(-duckyDiskpower);
 //            }
 //            else {
-//                duckyDiskMotor.setPower(0);
-//                duckyDiskpower = DUCK_DISK_STARTING_POWER;
+//                duckyDiskMotor
+//            else {
+//                duckyDiskPowerNEW = duckyDiskSeedPower;
 //            }
-
-            if(gamepad1.x) {
-                duckyDiskPowerNEW = Math.pow(duckyDiskPowerNEW, duckyDiskGain);
-            }
-            else {
-                duckyDiskPowerNEW = duckyDiskSeedPower;
-            }
             if(duckyDiskPowerNEW != duckyDiskSeedPower) {
                 duckyDiskMotor.setPower(-duckyDiskPowerNEW);
             }
