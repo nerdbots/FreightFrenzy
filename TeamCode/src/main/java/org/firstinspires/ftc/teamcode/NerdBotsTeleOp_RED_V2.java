@@ -193,7 +193,8 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     double WristjoyY=0;
 
     public static double duckyDiskPowerNEW;
-    public static double duckyDiskGain = 0.65;
+//    public static double duckyDiskGain = 0.995;
+    public static double duckyDiskGain = 0.9;
     public static double duckyDiskSeedPower = 0.02;
 
     double propError = 0;
@@ -506,17 +507,16 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 //                duckyDiskMotor.setPower(-duckyDiskpower);
 //            }
 //            else {
-//                duckyDiskMotor.setPower(0);
-//                duckyDiskpower = DUCK_DISK_STARTING_POWER;
+//                duckyDiskMotor
+//            else {
+//                duckyDiskPowerNEW = duckyDiskSeedPower;
 //            }
-
-            if(gamepad1.x) {
-                duckyDiskPowerNEW = Math.pow(duckyDiskPowerNEW, duckyDiskGain);
+            if(duckyDiskPowerNEW != duckyDiskSeedPower) {
+                duckyDiskMotor.setPower(-duckyDiskPowerNEW);
             }
             else {
-                duckyDiskPowerNEW = -duckyDiskSeedPower;
+                duckyDiskMotor.setPower(0);
             }
-            duckyDiskMotor.setPower(-duckyDiskPowerNEW);
             telemetry.addData("ducky disk power", duckyDiskPowerNEW)
 ;            //Minor Wrist adjustments
             telemetry.update();
