@@ -2,7 +2,9 @@ package teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -59,6 +61,12 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     //Finger Servos
     private Servo leftGrab;
     private Servo rightGrab;
+
+    ColorSensor colorSensor;
+    RevBlinkinLedDriver blinkinLedDriver;
+    ElapsedTime IntakeTimer = new ElapsedTime();
+    ElapsedTime IntakeTimer2 = new ElapsedTime();
+    private boolean isBlockIn = false;
 
     //    private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime elapsedTime = new ElapsedTime();
@@ -284,6 +292,9 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         this.leftEncoder = this.hardwareMap.get(DcMotor.class, "Ducky_Disk");
         this.backEncoder = this.hardwareMap.get(DcMotor.class, "Intake");
 
+
+        this.colorSensor = this.hardwareMap.get(ColorSensor.class, "colorSensor");
+        this.blinkinLedDriver = this.hardwareMap.get(RevBlinkinLedDriver.class, "led");
 
 
 
@@ -1077,10 +1088,14 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
 //        robotFaceAngle = Range.clip((angleIncrement * distanceFromStart) + segmentStartAngle, segmentStartAngle, segmentEndAngle);
 //         Normal turn code
-        if (segmentStartAngle < segmentEndAngle){
-            robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + segmentStartAngle, segmentStartAngle, segmentEndAngle);
-        }else if (segmentStartAngle > segmentEndAngle){
-            robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + segmentStartAngle, segmentEndAngle, segmentStartAngle);
+        if (distanceFromStart < distanceAtStart * 0.9){
+            if (segmentStartAngle < segmentEndAngle){
+                robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + segmentStartAngle, segmentStartAngle, segmentEndAngle);
+            }else if (segmentStartAngle > segmentEndAngle){
+                robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + segmentStartAngle, segmentEndAngle, segmentStartAngle);
+            }
+        }else if (distanceFromStart > distanceAtStart * 0.9){
+            robotFaceAngle = segmentEndAngle;
         }
 
         zPIDAngle = 90 + getAngle();
@@ -1090,7 +1105,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         zPowerStart = robotTurnSpeedFF;
 
 
-        zPower = Range.clip((robotTurnSpeed + zPowerStart), -0.3, 0.3);
+        zPower = Range.clip((robotTurnSpeed + zPowerStart), -0.5, 0.5);
 
         frontLeftMotorPower = -xPower + zPower;
         rearRightMotorPower = xPower + zPower;
@@ -1226,6 +1241,48 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         }
 
     }
+
+    public void AutonBlockIntake(){
+
+        while(this.opmode.opModeIsActive() && isBlockIn == false && !this.opmode.isStopRequested()) {
+            IntakeTimer.reset();
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            while(!(colorSensor.alpha() > 200) && IntakeTimer.seconds() <= 2) {
+                rearRightMotor.setPower(0.35);
+                frontLeftMotor.setPower(-0.35);
+                rearLeftMotor.setPower(-0.35);
+                frontRightMotor.setPower(0.35);
+                backEncoder.setPower(-0.5);
+                this.opmode.telemetry.addData("timer 1", IntakeTimer.seconds());
+                this.opmode.telemetry.update();
+
+            }
+            if(colorSensor.alpha() > 200){  blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN); }
+            IntakeTimer2.reset();
+            while(IntakeTimer2.seconds() < 0.5) {
+                rearRightMotor.setPower(-0.35);
+                frontLeftMotor.setPower(0.35);
+                rearLeftMotor.setPower(0.35);
+                frontRightMotor.setPower(-0.35);
+                backEncoder.setPower(0);
+                this.opmode.telemetry.addData("timer 2", IntakeTimer2.seconds());
+                this.opmode.telemetry.update();
+            }
+            rearRightMotor.setPower(0);
+            frontLeftMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            if(colorSensor.alpha() > 200) {
+                backEncoder.setPower(0.5);
+            }
+            if(colorSensor.alpha() > 200)  { isBlockIn = true; }
+
+        }
+
+
+
+    }
+
 
     public void runMotor(String motor, double power, double timeInSeconds){
 

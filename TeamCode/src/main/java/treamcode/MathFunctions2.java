@@ -1,10 +1,14 @@
 package treamcode;
 
+import com.qualcomm.robotcore.util.RobotLog;
+
 import java.util.ArrayList;
 
 import core.PointPP;
 
 public class MathFunctions2 {
+
+    public static boolean debugFlag=true;
 
     public static double AngleWrap(double angle) {
         while (angle < Math.PI) {
@@ -135,6 +139,11 @@ public class MathFunctions2 {
         double yIntersection1 = ((((x1 * y2) - (y1 * x2)) * (y3 - y4)) - ((y1 - y2) * ((x3 * y4) - (y3 * x4)))) / D;
 
         intersectionPoints.add(new PointPP(xIntersection1, yIntersection1));
+
+        if (debugFlag) {
+            RobotLog.d("pathDistance - x1 %f, y1 %f, x2 %f, y2 %f, x3 %f, y3 %f, pSlope %f, robotTarget.x %f, robotTarget.y %f, circleCenter.x %f, circleCenter.y %f, x4 %f, y4 %f, D %f, xIntersection1 %f, yIntersection1 %f",
+                    x1, y1, x2, y2, x3, y3, pSlope, robotTarget.x, robotTarget.y, circleCenter.x, circleCenter.y, x4, y4, D, xIntersection1, yIntersection1);
+        }
 
         return intersectionPoints;
     }
