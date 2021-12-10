@@ -7,7 +7,7 @@ public  enum ArmShoulderPositions {
     LEVEL2(860,0.3,0.50,0.50),
     LEVEL3(600,0.3,0.8,0.2),
     TSE_DROP(600,0.3,0.62,0.38),
-    GROUND_PICKUP(1000,0.3,0.43,0.57),
+    GROUND_PICKUP(1100,0.3,0.43,0.57),
     HOME(100,0.3,0.15,0.85),
     SHARED_HUB(1000, 0.3, 0.38,0.62);
 

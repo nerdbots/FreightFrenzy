@@ -447,6 +447,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
             if(gamepad2.left_bumper){
                 WRIST_SERVO_INCREMENT = 0.0;
                 shoulderPosition = ArmShoulderPositions.GROUND_PICKUP;
+                fingerPosition = FingerPositions.INTAKE_READY;
             }
 
             if(gamepad2.right_bumper){
