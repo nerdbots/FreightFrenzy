@@ -85,9 +85,9 @@ public class HardwarePushbot
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        leftArm.setPower(0);
+        leftDrive.setPower(1);
+        rightDrive.setPower(1);
+        leftArm.setPower(0.5);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -98,8 +98,8 @@ public class HardwarePushbot
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "left_hand");
         rightClaw = hwMap.get(Servo.class, "right_hand");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
+        leftClaw.setPosition(-1);
+        rightClaw.setPosition(-1);
     }
  }
 
