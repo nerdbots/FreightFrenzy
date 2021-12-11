@@ -229,6 +229,9 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     boolean distanceReached = false;
     boolean distanceStarted = false;
     double distanceToPointOld = 0;
+    double pathSegment1Length = 0;
+    double distanceToPoint = 0;
+
 
 
     //Wizards.exe odometry
@@ -549,10 +552,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             ArrayList<PointPP> perpendicularIntersection1 = MathFunctions2.pathDistance(new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.toPoint(), endSegment1.toPoint(), followMe.toPoint());
 
             for(PointPP thisIntersection1 : perpendicularIntersection1){
-                double pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
-                double distanceToPoint = Math.hypot((endSegment1.x - thisIntersection1.x), (endSegment1.y - thisIntersection1.y));
+                pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
+                distanceToPoint = Math.hypot((endSegment1.x - thisIntersection1.x), (endSegment1.y - thisIntersection1.y));
 
-                if (distanceToPoint < (pathSegment1Length / 10) && distanceToPoint < distanceToPointOld){
+                if (distanceToPoint < (pathSegment1Length / 5) && distanceToPoint < distanceToPointOld){
                     distanceReached = true;
                     pL = pL + 1;
                 }else{
@@ -565,7 +568,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 goToPositionEndPP(endPoint.x, endPoint.y, 1.0, parkAngleTarget, 0.2, distanceToPark, new PointPP(robotXMultiThread, robotYMultiThread));
             }
             else {
-                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y, new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.slowDownTurnAmount, endSegment1.slowDownTurnAmount);
+                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startSegment1.x, startSegment1.y, endSegment1.x, endSegment1.y,
+                        new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.slowDownTurnAmount, endSegment1.slowDownTurnAmount, pathSegment1Length, distanceToPoint);
             }
 
 
@@ -852,10 +856,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             ArrayList<PointPP> perpendicularIntersection1 = MathFunctions2.pathDistance(new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.toPoint(), endSegment1.toPoint(), followMe.toPoint());
 
             for(PointPP thisIntersection1 : perpendicularIntersection1){
-                double pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
-                double distanceToPoint = Math.sqrt(((endSegment1.x - thisIntersection1.x) * (endSegment1.x - thisIntersection1.x)) + ((endSegment1.y - thisIntersection1.y) * (endSegment1.y - thisIntersection1.y)));
+                pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
+                distanceToPoint = Math.sqrt(((endSegment1.x - thisIntersection1.x) * (endSegment1.x - thisIntersection1.x)) + ((endSegment1.y - thisIntersection1.y) * (endSegment1.y - thisIntersection1.y)));
 
-                if (distanceToPoint < (pathSegment1Length / 10) && distanceToPoint < distanceToPointOld){
+                if (distanceToPoint < (pathSegment1Length / 5) && distanceToPoint < distanceToPointOld){
                     distanceReached = true;
                     pL = pL + 1;
                 }else{
@@ -868,7 +872,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 goToPositionEndPP(endPoint.x, endPoint.y, 1.0, parkAngleTarget, 0.2, distanceToPark, new PointPP(robotXMultiThread, robotYMultiThread));
             }
             else {
-                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startPath.x, startPath.y, endPoint.x, endPoint.y, new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.slowDownTurnAmount, endSegment1.slowDownTurnAmount);
+                goToPositionPP(followMe.x, followMe.y, followMe.moveSpeed, zPowerFF, followMe.turnSpeed, parkAngleTarget, distanceToPark, startSegment1.x, startSegment1.y, endSegment1.x, endSegment1.y,
+                        new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.slowDownTurnAmount, endSegment1.slowDownTurnAmount, pathSegment1Length, distanceToPoint);
             }
 
             //If there is a delay requested, we stay at the initial position until the requested time.
@@ -1063,7 +1068,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
 
     public void goToPositionPP(double x, double y, double movementSpeed, double zPowerFeedForward, double turnSpeed, double parkAngleTarget, double parkDistance,
-                               double robotPositionXStart, double robotPositionYStart, double endPointX, double endPointY, PointPP robotLocationMT, double segmentStartAngle, double segmentEndAngle){
+                               double robotPositionXStart, double robotPositionYStart, double endPointX, double endPointY, PointPP robotLocationMT,
+                               double segmentStartAngle, double segmentEndAngle, double segmentLength, double distToPoint){
 
         currentTime = elapsedTime.seconds();
         loopTime = currentTime - oldTime;
@@ -1080,21 +1086,18 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         xPower = Math.cos(motorAngleToTarget * 3.14 / 180) * movementSpeed;
         yPower = Math.sin(motorAngleToTarget * 3.14 / 180) * movementSpeed;
 
-        double relativeTurnAngle = MathFunctions.AngleWrapDeg(robotTargetAngle - (getAngle() + 90));
+//        double relativeTurnAngle = MathFunctions.AngleWrapDeg(robotTargetAngle - (getAngle() + 90));
+//        double distanceFromStart = Math.hypot(robotLocationMT.x - robotPositionXStart, robotLocationMT.y - robotPositionYStart);
+//        double distanceAtStart = Math.hypot(endPointX - robotPositionXStart, endPointY - robotPositionYStart);
+        angleIncrement = (segmentEndAngle - segmentStartAngle);
 
-        double distanceFromStart = Math.hypot(robotLocationMT.x - robotPositionXStart, robotLocationMT.y - robotPositionYStart);
-        double distanceAtStart = Math.hypot(endPointX - robotPositionXStart, endPointY - robotPositionYStart);
-        angleIncrement = (segmentEndAngle - segmentStartAngle) / (0.9 * distanceAtStart);
-
-//        robotFaceAngle = Range.clip((angleIncrement * distanceFromStart) + segmentStartAngle, segmentStartAngle, segmentEndAngle);
-//         Normal turn code
-        if (distanceFromStart < distanceAtStart * 0.9){
+        if (distToPoint > segmentLength * 0.1){
             if (segmentStartAngle < segmentEndAngle){
-                robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + segmentStartAngle, segmentStartAngle, segmentEndAngle);
+                robotFaceAngle = Range.clip(angleIncrement * (1 - (distToPoint / segmentLength)) + segmentStartAngle, segmentStartAngle, segmentEndAngle);
             }else if (segmentStartAngle > segmentEndAngle){
-                robotFaceAngle = Range.clip(angleIncrement * distanceFromStart + segmentStartAngle, segmentEndAngle, segmentStartAngle);
+                robotFaceAngle = Range.clip(angleIncrement * (1 - (distToPoint / segmentLength)) + segmentStartAngle, segmentEndAngle, segmentStartAngle);
             }
-        }else if (distanceFromStart > distanceAtStart * 0.9){
+        }else if (distToPoint < segmentLength * 0.1){
             robotFaceAngle = segmentEndAngle;
         }
 
