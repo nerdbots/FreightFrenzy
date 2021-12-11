@@ -1268,16 +1268,18 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 this.opmode.telemetry.update();
 
             }
-            if(colorSensor.alpha() > 200){  blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN); }
-            IntakeTimer2.reset();
-            while(IntakeTimer2.seconds() < 0.5) {
-                rearRightMotor.setPower(-0.35);
-                frontLeftMotor.setPower(0.35);
-                rearLeftMotor.setPower(0.35);
-                frontRightMotor.setPower(-0.35);
-                backEncoder.setPower(0);
-                this.opmode.telemetry.addData("timer 2", IntakeTimer2.seconds());
-                this.opmode.telemetry.update();
+            if(colorSensor.alpha() > 200) {
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                IntakeTimer2.reset();
+                while (IntakeTimer2.seconds() < 0.5) {
+                    rearRightMotor.setPower(-0.35);
+                    frontLeftMotor.setPower(0.35);
+                    rearLeftMotor.setPower(0.35);
+                    frontRightMotor.setPower(-0.35);
+                    backEncoder.setPower(0);
+                    this.opmode.telemetry.addData("timer 2", IntakeTimer2.seconds());
+                    this.opmode.telemetry.update();
+                }
             }
             rearRightMotor.setPower(0);
             frontLeftMotor.setPower(0);
