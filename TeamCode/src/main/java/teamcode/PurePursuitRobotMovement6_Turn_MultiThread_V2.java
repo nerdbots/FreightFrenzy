@@ -822,6 +822,9 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         leftGrab.setPosition(targetFingerPosition.getLeftFingerPosition());
         rightGrab.setPosition(targetFingerPosition.getRightFingerPosition());
 
+        ElapsedTime intakeDelayTimer = new ElapsedTime();
+
+
 
         while (this.opmode.opModeIsActive() && !this.opmode.isStopRequested() &&
                 !distanceTargetReached(distanceToEndPoint, parkRadius) &&
@@ -957,8 +960,11 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
             //ARM End
 
+
             if(motor.equals("intake")) {
                 //   if(finalArmTargetReached == true && originalArmTargetPosition == ArmShoulderPositions.INTAKE)
+//                intakeDelayTimer.reset();
+                if(intakeDelayTimer.seconds()> 2)
                 runMotor("intake", power);
             }
             else if (motor.equals("duckyDisc"))
@@ -1246,9 +1252,11 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     }
 
     public void AutonBlockIntake(){
-
+        isBlockIn = false;
+        IntakeTimer.reset();
+        IntakeTimer2.reset();
         while(this.opmode.opModeIsActive() && isBlockIn == false && !this.opmode.isStopRequested()) {
-            IntakeTimer.reset();
+//            IntakeTimer.reset();
             blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
             while(!(colorSensor.alpha() > 200) && IntakeTimer.seconds() <= 2) {
                 rearRightMotor.setPower(0.35);
