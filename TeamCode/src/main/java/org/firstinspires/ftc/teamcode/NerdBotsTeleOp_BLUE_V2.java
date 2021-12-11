@@ -233,7 +233,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
     public static double duckyDiskPowerNEW;
 //    public static double duckyDiskGain = 0.995;
-    public static double duckyDiskGain = 0.9;
+    public static double duckyDiskGain = 0.95;
     public static double duckyDiskSeedPower = 0.02;
 
 
@@ -394,6 +394,11 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
                 joyX = -0.8;
                 joyY = 0.2;
             }
+            else if(gamepad1.left_bumper)
+            {
+                joyX = 0.8;
+                joyY = -0.2;
+            }
 
 
             //sets the current angle of the gyro to 0
@@ -512,6 +517,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 //            }
 //            else {
 //                duckyDiskMotor.setPower(0);
+
+
 //                duckyDiskpower = DUCK_DISK_STARTING_POWER;
 //            }
 
