@@ -228,9 +228,16 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     int pLf; //Next path point indicator for pure pursuit
     boolean distanceReached = false;
     boolean distanceStarted = false;
-    double distanceToPointOld = 0;
     double pathSegment1Length = 0;
     double distanceToPoint = 0;
+    double distanceToPointOld = 0;
+    double distanceFromPoint = 0;
+    double thisIntersection1XDisp = 0;
+    double thisIntersection1YDisp = 0;
+    double thisIntersection1XOld = 0;
+    double thisIntersection1YOld = 0;
+    double pathSegment1Mag = 0;
+    double distanceFromPointPath = 0;
 
 
 
@@ -523,10 +530,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         angleIncrement = ((parkAngleTarget - angleStart) / (distanceToEndPoint - distanceToPark));
         robotFaceAngle = angleStart;
         pL = 0;
-//11_15
-//        OdometryGlobalCoordinatePositionNERD globalPositionUpdate = new OdometryGlobalCoordinatePositionNERD(leftEncoder, rightEncoder, backEncoder, imu, COUNTS_PER_INCH, 75);
-//        Thread positionThread = new Thread(globalPositionUpdate);
-//        positionThread.start();
+        distanceFromPointPath = 0;
+
 
         while (this.opmode.opModeIsActive() && !this.opmode.isStopRequested() && !distanceTargetReached(distanceToEndPoint, parkRadius)) {
 
@@ -554,10 +559,19 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             for(PointPP thisIntersection1 : perpendicularIntersection1){
                 pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
                 distanceToPoint = Math.hypot((endSegment1.x - thisIntersection1.x), (endSegment1.y - thisIntersection1.y));
+                distanceFromPoint = Math.hypot((startSegment1.x - thisIntersection1.x), (startSegment1.y - thisIntersection1.y));
 
-                if (distanceToPoint < (pathSegment1Length / 5) && distanceToPoint < distanceToPointOld){
+                thisIntersection1XDisp = thisIntersection1.x - thisIntersection1XOld;
+                thisIntersection1YDisp = thisIntersection1.y - thisIntersection1YOld;
+                thisIntersection1XOld = thisIntersection1.x;
+                thisIntersection1YOld = thisIntersection1.y;
+                pathSegment1Mag = Math.hypot(thisIntersection1XDisp, thisIntersection1YDisp);
+                distanceFromPointPath += pathSegment1Mag;
+
+                if (distanceToPoint < (pathSegment1Length / 5) || distanceFromPoint > pathSegment1Length || distanceFromPointPath > (pathSegment1Length * 0.9)){
                     distanceReached = true;
                     pL = pL + 1;
+                    distanceFromPointPath = 0;
                 }else{
                     distanceReached = false;
                 }
@@ -572,14 +586,18 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                         new PointPP(robotXMultiThread, robotYMultiThread), startSegment1.slowDownTurnAmount, endSegment1.slowDownTurnAmount, pathSegment1Length, distanceToPoint);
             }
 
+            if (debugFlag) {
+                RobotLog.d("followCurve - runTime %f, deltaTime %f, pathSegment1Length %f, distanceToPoint %f, distanceFromPoint %f, distanceFromPointPath %f, pL %d",
+                        currentTime, deltaTime, pathSegment1Length, distanceToPoint, distanceFromPoint, distanceFromPointPath, pL);
+            }
+
 
         }
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         rearLeftMotor.setPower(0);
         rearRightMotor.setPower(0);
-//11_15
-//        globalPositionUpdate.stop();
+
     }
 
 
@@ -784,6 +802,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         angleIncrement = ((parkAngleTarget - angleStart) / (distanceToEndPoint - distanceToPark));
         robotFaceAngle = angleStart;
         pL = 0;
+        distanceFromPointPath = 0;
 
         //ARM 11_08
 
@@ -860,15 +879,29 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
             for(PointPP thisIntersection1 : perpendicularIntersection1){
                 pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
-                distanceToPoint = Math.sqrt(((endSegment1.x - thisIntersection1.x) * (endSegment1.x - thisIntersection1.x)) + ((endSegment1.y - thisIntersection1.y) * (endSegment1.y - thisIntersection1.y)));
+                distanceToPoint = Math.hypot((endSegment1.x - thisIntersection1.x), (endSegment1.y - thisIntersection1.y));
+                distanceFromPoint = Math.hypot((startSegment1.x - thisIntersection1.x), (startSegment1.y - thisIntersection1.y));
 
-                if (distanceToPoint < (pathSegment1Length / 5) && distanceToPoint < distanceToPointOld){
+                thisIntersection1XDisp = thisIntersection1.x - thisIntersection1XOld;
+                thisIntersection1YDisp = thisIntersection1.y - thisIntersection1YOld;
+                thisIntersection1XOld = thisIntersection1.x;
+                thisIntersection1YOld = thisIntersection1.y;
+                pathSegment1Mag = Math.hypot(thisIntersection1XDisp, thisIntersection1YDisp);
+                distanceFromPointPath += pathSegment1Mag;
+
+                if (distanceToPoint < (pathSegment1Length / 5) || distanceFromPoint > pathSegment1Length || distanceFromPointPath > (pathSegment1Length * 0.9)){
                     distanceReached = true;
                     pL = pL + 1;
+                    distanceFromPointPath = 0;
                 }else{
                     distanceReached = false;
                 }
                 distanceToPointOld = distanceToPoint;
+            }
+
+            if (debugFlag) {
+                RobotLog.d("followCurveArm_V2 - runTime %f, deltaTime %f, pathSegment1Length %f, distanceToPoint %f, distanceFromPoint %f, distanceFromPointPath %f, pL %d",
+                        currentTime, deltaTime, pathSegment1Length, distanceToPoint, distanceFromPoint, distanceFromPointPath, pL);
             }
 
             if(distanceToEndPoint < distanceToPark){
@@ -1256,22 +1289,22 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         IntakeTimer.reset();
         IntakeTimer2.reset();
         while(this.opmode.opModeIsActive() && isBlockIn == false && !this.opmode.isStopRequested()) {
-//            IntakeTimer.reset();
+            IntakeTimer.reset();
             blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
             while(!(colorSensor.alpha() > 200) && IntakeTimer.seconds() <= 2) {
                 rearRightMotor.setPower(0.35);
                 frontLeftMotor.setPower(-0.35);
                 rearLeftMotor.setPower(-0.35);
                 frontRightMotor.setPower(0.35);
-                backEncoder.setPower(-0.5);
+                backEncoder.setPower(-1);
                 this.opmode.telemetry.addData("timer 1", IntakeTimer.seconds());
                 this.opmode.telemetry.update();
 
             }
             if(colorSensor.alpha() > 200) {
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);}
                 IntakeTimer2.reset();
-                while (IntakeTimer2.seconds() < 0.5) {
+                while (IntakeTimer2.seconds() < 0.75) {
                     rearRightMotor.setPower(-0.35);
                     frontLeftMotor.setPower(0.35);
                     rearLeftMotor.setPower(0.35);
@@ -1279,7 +1312,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                     backEncoder.setPower(0);
                     this.opmode.telemetry.addData("timer 2", IntakeTimer2.seconds());
                     this.opmode.telemetry.update();
-                }
+
             }
             rearRightMotor.setPower(0);
             frontLeftMotor.setPower(0);
