@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode;
 public  enum ArmShoulderPositions {
 
     INTAKE(0,0.2,0.28,0.72),
-    LEVEL1(1100,0.3,0.28,0.72),
-    LEVEL2(810,0.3,0.53,0.47),
+    LEVEL1(1100,0.4,0.28,0.72),
+    LEVEL2(830,0.3,0.53,0.47),
     LEVEL3(600,0.3,0.7,0.3),
     TSE_DROP(600,0.3,0.62,0.38),
     GROUND_PICKUP(1100,0.3,0.43,0.57),
     HOME(100,0.3,0.15,0.85),
-    SHARED_HUB(1000, 0.3, 0.38,0.62);
+    SHARED_HUB(1000, 0.4, 0.38,0.62);
 
 
     private  final int armTarget;

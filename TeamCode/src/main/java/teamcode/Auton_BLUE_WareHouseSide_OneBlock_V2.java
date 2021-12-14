@@ -1,7 +1,6 @@
 package teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.ArmShoulderPositions;
@@ -12,10 +11,10 @@ import java.util.ArrayList;
 
 import treamcode.CurvePoint;
 
-@Disabled
-@Autonomous(name="Auton_BLUE_WareHouseSide_OneBlock_V2", group="Linear Opmode")
 
-public class Auton_BLUE_WareHouseSide_MultiThread_V2 extends LinearOpMode {
+@Autonomous(name="BLUE_WarehouseSide_OneBlock", group="Linear Opmode")
+
+public class Auton_BLUE_WareHouseSide_OneBlock_V2 extends LinearOpMode {
 
     private PurePursuitRobotMovement6_Turn_MultiThread_V2 myPurePursuitRobotMovement6_Turn_MultiThread;
 
@@ -23,6 +22,8 @@ public class Auton_BLUE_WareHouseSide_MultiThread_V2 extends LinearOpMode {
 
     double armDelay = 0.0;
     double shippingHubPark = 0;
+    double shpX = 0;
+    double shpY = 0;
 
     int purePursuitPath = 1;
     DuckDetector.DuckDeterminationPipeline.DuckPosition duckPosition;
@@ -71,63 +72,57 @@ public class Auton_BLUE_WareHouseSide_MultiThread_V2 extends LinearOpMode {
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
-            shippingHubPark = 22;
+            shippingHubPark = 25;
+            shpX = 2;
+            shpY = 27;
         }
         else if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.LEFT)){
             shoulderPosition = ArmShoulderPositions.LEVEL1;
             armDelay=0.5;
-            shippingHubPark = 25;
+            shippingHubPark = 29;
+            shpX = 2;
+            shpY = 29;
         }
         else if(duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.RIGHT)){
             shoulderPosition = ArmShoulderPositions.LEVEL3;
             armDelay = 0.0;
-            shippingHubPark = 27;
+            shippingHubPark = 30;
+            shpX = 4;
+            shpY = 28;
         }
 
         if (purePursuitPath == 1){
 
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(0, 0, 0.4, 0.3, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(8, shippingHubPark, 0.4, 0.3, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(80, 80, 0.4, 0.3, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(0, 0, 0.4, 0.3, 25, 180, 90));
+            allPoints.add(new CurvePoint(shpX, shpY, 0.4, 0.3, 25, 180, 225));
+            allPoints.add(new CurvePoint(0, 68, 0.4, 0.3, 25, 180, 225));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,0,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.turnRobot(235);
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 15, 225, 2, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,0,"none", 0);
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.setFingerPositions(FingerPositions.ENTER_INTAKE);
+            myPurePursuitRobotMovement6_Turn_MultiThread.setFingerPositions(FingerPositions.INTAKE_READY);
 
-            sleep(1000);
-            myPurePursuitRobotMovement6_Turn_MultiThread.turnRobot(270);
+            sleep(300);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(8, shippingHubPark, 0.6, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(15, -15, 0.6, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-10, -8.5, 0.6, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-35, -2, 0.6, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-60, 0, 0.6, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(shpX, shpY, 0.8, 0.3, 20, 180, 225));
+            allPoints.add(new CurvePoint(5, -4, 0.6, 0.3, 20, 180, 180));
+            allPoints.add(new CurvePoint(0, -12, 0.6, 0.3, 20, 180, 180));
+            allPoints.add(new CurvePoint(-10, -8, 0.6, 0.3, 20, 180, 180));
+            allPoints.add(new CurvePoint(-20, -2, 0.6, 0.3, 25, 180, 180));
+            allPoints.add(new CurvePoint(-39, 0, 0.6, 0.3, 25, 180, 180));
+            allPoints.add(new CurvePoint(-70, 0, 0.6, 0.3, 25, 180, 180));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 15, 180, 5, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 15, 180, 5, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.INTAKE_READY,0.7, 0,"none", 0);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(-35, -2, 0.4, 0.4, 25, 0, 0.3));
-            allPoints.add(new CurvePoint(-35, 20, 0.4, 0.4, 25, 180, 0.3));
-            allPoints.add(new CurvePoint(-35, 60, 0.4, 0.4, 25, 180, 0.3));
+            allPoints.add(new CurvePoint(-39, 3, 0.4, 0.4, 25, 0, 180));
+            allPoints.add(new CurvePoint(-39, 22, 0.4, 0.4, 25, 180, 180));
+            allPoints.add(new CurvePoint(-39, 60, 0.4, 0.4, 25, 180, 180));
 
             myPurePursuitRobotMovement6_Turn_MultiThread.followCurve(allPoints, 0, 15, 180, 3);
 
-//            myPurePursuitRobotMovement6_Turn.runMotor("duckyDisc",1,4);
-////            sleep(2000);
-//
-//            allPoints = new ArrayList<>();
-//            allPoints.add(new CurvePoint(-24, 8, 0.8, 0.3, 40, 0, 0.3));
-//            allPoints.add(new CurvePoint(0, -4, 0.8, 0.3, 40, 180, 0.3));
-//            allPoints.add(new CurvePoint(83, -6, 0.8, 0.3, 40, 180, 0.3));
-//            allPoints.add(new CurvePoint(130, -6, 0.8, 0.3, 40, 180, 0.3));
-//
-//            myPurePursuitRobotMovement6_Turn.followCurve(allPoints, 0, 35, -180, 10);
-
-            //----------------------------------------------
 
         }
 

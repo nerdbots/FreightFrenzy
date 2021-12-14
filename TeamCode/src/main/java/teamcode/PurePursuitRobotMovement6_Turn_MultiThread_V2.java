@@ -559,16 +559,17 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             for(PointPP thisIntersection1 : perpendicularIntersection1){
                 pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
                 distanceToPoint = Math.hypot((endSegment1.x - thisIntersection1.x), (endSegment1.y - thisIntersection1.y));
-                distanceFromPoint = Math.hypot((startSegment1.x - thisIntersection1.x), (startSegment1.y - thisIntersection1.y));
+//                distanceFromPoint = Math.hypot((startSegment1.x - thisIntersection1.x), (startSegment1.y - thisIntersection1.y));
+//
+//                thisIntersection1XDisp = thisIntersection1.x - thisIntersection1XOld;
+//                thisIntersection1YDisp = thisIntersection1.y - thisIntersection1YOld;
+//                thisIntersection1XOld = thisIntersection1.x;
+//                thisIntersection1YOld = thisIntersection1.y;
+//                pathSegment1Mag = Math.hypot(thisIntersection1XDisp, thisIntersection1YDisp);
+//                distanceFromPointPath += pathSegment1Mag;
 
-                thisIntersection1XDisp = thisIntersection1.x - thisIntersection1XOld;
-                thisIntersection1YDisp = thisIntersection1.y - thisIntersection1YOld;
-                thisIntersection1XOld = thisIntersection1.x;
-                thisIntersection1YOld = thisIntersection1.y;
-                pathSegment1Mag = Math.hypot(thisIntersection1XDisp, thisIntersection1YDisp);
-                distanceFromPointPath += pathSegment1Mag;
-
-                if (distanceToPoint < (pathSegment1Length / 5) || distanceFromPoint > pathSegment1Length || distanceFromPointPath > (pathSegment1Length * 0.9)){
+//                if (distanceToPoint < (pathSegment1Length / 5) || distanceFromPoint > pathSegment1Length || distanceFromPointPath > (pathSegment1Length * 0.9))
+                if (distanceToPoint < (pathSegment1Length / 3) || distanceFromPoint > pathSegment1Length){
                     distanceReached = true;
                     pL = pL + 1;
                     distanceFromPointPath = 0;
@@ -880,16 +881,17 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             for(PointPP thisIntersection1 : perpendicularIntersection1){
                 pathSegment1Length = Math.sqrt(((endSegment1.x - startSegment1.x) * (endSegment1.x - startSegment1.x)) + (endSegment1.y - startSegment1.y) * (endSegment1.y - startSegment1.y));
                 distanceToPoint = Math.hypot((endSegment1.x - thisIntersection1.x), (endSegment1.y - thisIntersection1.y));
-                distanceFromPoint = Math.hypot((startSegment1.x - thisIntersection1.x), (startSegment1.y - thisIntersection1.y));
+//                distanceFromPoint = Math.hypot((startSegment1.x - thisIntersection1.x), (startSegment1.y - thisIntersection1.y));
+//
+//                thisIntersection1XDisp = thisIntersection1.x - thisIntersection1XOld;
+//                thisIntersection1YDisp = thisIntersection1.y - thisIntersection1YOld;
+//                thisIntersection1XOld = thisIntersection1.x;
+//                thisIntersection1YOld = thisIntersection1.y;
+//                pathSegment1Mag = Math.hypot(thisIntersection1XDisp, thisIntersection1YDisp);
+//                distanceFromPointPath += pathSegment1Mag;
 
-                thisIntersection1XDisp = thisIntersection1.x - thisIntersection1XOld;
-                thisIntersection1YDisp = thisIntersection1.y - thisIntersection1YOld;
-                thisIntersection1XOld = thisIntersection1.x;
-                thisIntersection1YOld = thisIntersection1.y;
-                pathSegment1Mag = Math.hypot(thisIntersection1XDisp, thisIntersection1YDisp);
-                distanceFromPointPath += pathSegment1Mag;
-
-                if (distanceToPoint < (pathSegment1Length / 5) || distanceFromPoint > pathSegment1Length || distanceFromPointPath > (pathSegment1Length * 0.9)){
+//                if (distanceToPoint < (pathSegment1Length / 5) || distanceFromPoint > pathSegment1Length || distanceFromPointPath > (pathSegment1Length * 0.9))
+                if (distanceToPoint < (pathSegment1Length / 3) || distanceFromPoint > pathSegment1Length){
                     distanceReached = true;
                     pL = pL + 1;
                     distanceFromPointPath = 0;
@@ -997,7 +999,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             if(motor.equals("intake")) {
                 //   if(finalArmTargetReached == true && originalArmTargetPosition == ArmShoulderPositions.INTAKE)
 //                intakeDelayTimer.reset();
-                if(intakeDelayTimer.seconds()> 2)
+                if(intakeDelayTimer.seconds()> 1)
                 runMotor("intake", power);
             }
             else if (motor.equals("duckyDisc"))
@@ -1070,7 +1072,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
                 //Need to check which angle is the same as worldAngle_rad...currently using getAngle() converted to radians
 //                double deltaAngle = Math.abs(MathFunctions.AngleWrap(angle - (robotPositionXYV[6] * Math.PI / 180)));
 
-                if(deltaAngle < closestAngle){
+                if(deltaAngle < closestAngle + 10){
                     closestAngle = deltaAngle;
                     followMe.setPoint(thisIntersection);
 //                double distance = Math.hypot(thisIntersection.x - robotLocation.x, thisIntersection.y - robotLocation.y);
@@ -1128,15 +1130,15 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 //        double relativeTurnAngle = MathFunctions.AngleWrapDeg(robotTargetAngle - (getAngle() + 90));
 //        double distanceFromStart = Math.hypot(robotLocationMT.x - robotPositionXStart, robotLocationMT.y - robotPositionYStart);
 //        double distanceAtStart = Math.hypot(endPointX - robotPositionXStart, endPointY - robotPositionYStart);
-        angleIncrement = (segmentEndAngle - segmentStartAngle);
+        angleIncrement = 3 * (segmentEndAngle - segmentStartAngle);
 
-        if (distToPoint > segmentLength * 0.1){
+        if (distToPoint > segmentLength * 0.3){
             if (segmentStartAngle < segmentEndAngle){
                 robotFaceAngle = Range.clip(angleIncrement * (1 - (distToPoint / segmentLength)) + segmentStartAngle, segmentStartAngle, segmentEndAngle);
             }else if (segmentStartAngle > segmentEndAngle){
                 robotFaceAngle = Range.clip(angleIncrement * (1 - (distToPoint / segmentLength)) + segmentStartAngle, segmentEndAngle, segmentStartAngle);
             }
-        }else if (distToPoint < segmentLength * 0.1){
+        }else if (distToPoint < segmentLength * 0.3){
             robotFaceAngle = segmentEndAngle;
         }
 
@@ -1177,8 +1179,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         rearLeftMotor.setPower(motorSpeedCommand[2]);
 
         if (debugFlag) {
-            RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, segmentStartAngle %f, segmentEndAngle %f, robotFaceAngle %f, robotAngle %f, pL %d, pLf %d",
-                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, segmentStartAngle, segmentEndAngle, robotFaceAngle, zPIDAngle, pL, pLf);
+            RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, segmentStartAngle %f, segmentEndAngle %f, segmentLength %f, distToPoint %f, robotFaceAngle %f, robotAngle %f, pL %d, pLf %d",
+                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, segmentStartAngle, segmentEndAngle, segmentLength, distToPoint, robotFaceAngle, zPIDAngle, pL, pLf);
         }
 
 

@@ -394,11 +394,11 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
                 joyX = -0.8;
                 joyY = 0.2;
             }
-            else if(gamepad1.left_bumper)
-            {
-                joyX = 0.8;
-                joyY = -0.2;
-            }
+//            else if(gamepad1.left_bumper)
+//            {
+//                joyX = 0.8;
+//                joyY = -0.2;
+//            }
 
 
             //sets the current angle of the gyro to 0

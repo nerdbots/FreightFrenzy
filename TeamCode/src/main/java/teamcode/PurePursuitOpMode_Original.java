@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.DuckDetector;
 
 import treamcode.CurvePoint;
-import treamcode.NerdPID_PurePursuit;
-import treamcode.wobble_Pickup;
 
 import java.util.ArrayList;
 

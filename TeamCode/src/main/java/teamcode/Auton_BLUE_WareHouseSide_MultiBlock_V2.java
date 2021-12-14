@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import treamcode.CurvePoint;
 
 
-@Autonomous(name="Auton_BLUE_WareHouseSide_MultiBlock_V2", group="Linear Opmode")
+@Autonomous(name="BLUE_WarehouseSide_MultiBlock", group="Linear Opmode")
 
 public class Auton_BLUE_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
 
@@ -135,11 +135,6 @@ public class Auton_BLUE_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
             sleep(1000);
 
             allPoints = new ArrayList<>();
-//            allPoints.add(new CurvePoint(-35, -2, 0.6, 0.4, 25, 0, 180));
-//            allPoints.add(new CurvePoint(-15, -2, 0.6, 0.4, 25, 180, 180));
-//            allPoints.add(new CurvePoint(-5, -2, 0.6, 0.4, 25, 180, 235));
-//            allPoints.add(new CurvePoint(8, shippingHubPark, 0.6, 0.4, 25, 180, 235));
-//            allPoints.add(new CurvePoint(80, 80, 0.6, 0.4, 25, 180, 235));
             allPoints.add(new CurvePoint(-35, 0, 0.4, 0.3, 15, 180, 180));
             allPoints.add(new CurvePoint(-20, -6, 0.8, 0.3, 25, 180, 180));
             allPoints.add(new CurvePoint(0, -6, 0.8, 0.3, 25, 180, 245));
@@ -192,6 +187,14 @@ public class Auton_BLUE_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
             allPoints.add(new CurvePoint(-74, 3, 0.6, 0.4, 25, 180, 180));
 
             myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 15, 180, 5, ArmShoulderPositions.LEVEL3, ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.INTAKE_READY,0.7, 0,"none", 0);
+
+            allPoints = new ArrayList<>();
+            allPoints.add(new CurvePoint(-39, 3, 0.4, 0.4, 25, 0, 180));
+            allPoints.add(new CurvePoint(-39, 22, 0.4, 0.4, 25, 180, 180));
+            allPoints.add(new CurvePoint(-39, 60, 0.4, 0.4, 25, 180, 180));
+
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurve(allPoints, 0, 15, 180, 3);
+
 
 //            myPurePursuitRobotMovement6_Turn_MultiThread.AutonBlockIntake();
 //
