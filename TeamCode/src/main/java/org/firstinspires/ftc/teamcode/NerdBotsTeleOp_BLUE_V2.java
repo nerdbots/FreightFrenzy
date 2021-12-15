@@ -215,13 +215,13 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     public static double ARM_TARGET=0;
     public static double MAX_POWER = 0.4;
     public static double INTAKE_TO_HOME_MAX_POWER = 0.2; //Change this to alter the max power from HOME to intake and intake to home positions
-    public static double LEVEL3_TO_HOME_MAX_POWER = 0.25; //Change this to alter max power from LEVEL3 to HOME.
+    public static double LEVEL3_TO_HOME_MAX_POWER = 0.3; //Change this to alter max power from LEVEL3 to HOME.
     public static double LEFT_WRIST_SERVO_POSITION=0.0;
     public static double RIGHT_WRIST_SERVO_POSITION=1.0;
     public static double LEFT_FINGER_SERVO_POSITION=0.53;
     public static double RIGHT_FINGER_SERVO_POSITION=0.55;
 
-    //Freigh Frenzy Arm Variables
+    //Freight Frenzy Arm Variables
 
     //Duck Disk RampUp/Down
 
@@ -229,12 +229,6 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
     double DUCK_DISK_POWER_INCREMENT = 0.05;
     double MAX_DUCK_DISK_POWER = 1.0;
     double duckyDiskpower = DUCK_DISK_STARTING_POWER;
-
-
-    public static double duckyDiskPowerNEW;
-//    public static double duckyDiskGain = 0.995;
-    public static double duckyDiskGain = 0.95;
-    public static double duckyDiskSeedPower = 0.02;
 
 
 
@@ -346,7 +340,6 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
             else if(light < 200){
                 blockIsIn = false;
             }
-
             if(blockIsIn == false) {
 
                 pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
@@ -354,11 +347,8 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
             }
 
             else if(blockIsIn == true) {
-
                 pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
                 blinkinLedDriver.setPattern(pattern);
-//                fingerPosition = FingerPositions.GRAB;
-//                shoulderPosition = ArmShoulderPositions.HOME;
             }
             previousShoulderPosition = shoulderPosition;
 
@@ -393,11 +383,6 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
                 //Changes as of 11_15
                 joyX = -0.8;
                 joyY = 0.2;
-            }
-            else if(gamepad1.left_bumper)
-            {
-                joyX = 0.8;
-                joyY = -0.2;
             }
 
 
@@ -460,7 +445,6 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
             if(gamepad2.left_bumper){
                 WRIST_SERVO_INCREMENT = 0.0;
                 shoulderPosition = ArmShoulderPositions.GROUND_PICKUP;
-                fingerPosition = FingerPositions.INTAKE_READY;
             }
 
             if(gamepad2.right_bumper){
@@ -508,37 +492,17 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 
             intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
 
-//            if(gamepad1.x){
-//                duckyDiskpower += DUCK_DISK_POWER_INCREMENT ;
-//                if (duckyDiskpower >= MAX_DUCK_DISK_POWER ) {
-//                    duckyDiskpower = MAX_DUCK_DISK_POWER;
-//                }
-//                duckyDiskMotor.setPower(duckyDiskpower);
-//            }
-//            else {
-//                duckyDiskMotor.setPower(0);
-
-
-//                duckyDiskpower = DUCK_DISK_STARTING_POWER;
-//            }
-
-            if(gamepad1.x) {
-                duckyDiskPowerNEW = Math.pow(duckyDiskPowerNEW, duckyDiskGain);
-            }
-            else {
-                duckyDiskPowerNEW = duckyDiskSeedPower;
-            }
-
-            if(duckyDiskPowerNEW != duckyDiskSeedPower) {
-                duckyDiskMotor.setPower(duckyDiskPowerNEW);
+            if(gamepad1.x){
+                duckyDiskpower += DUCK_DISK_POWER_INCREMENT ;
+                if (duckyDiskpower >= MAX_DUCK_DISK_POWER ) {
+                    duckyDiskpower = MAX_DUCK_DISK_POWER;
+                }
+                duckyDiskMotor.setPower(duckyDiskpower);
             }
             else {
                 duckyDiskMotor.setPower(0);
+                duckyDiskpower = DUCK_DISK_STARTING_POWER;
             }
-
-            telemetry.addData("ducky disk power", duckyDiskPowerNEW)
-            ;            //Minor Wrist adjustments
-            telemetry.update();
 
             //Minor Wrist adjustments
 
@@ -623,11 +587,10 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
                 LEFT_FINGER_SERVO_POSITION = fingerPosition.getLeftFingerPosition();
                 RIGHT_FINGER_SERVO_POSITION = fingerPosition.getRightFingerPosition();
             }
-            leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
-            rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
             leftArmServo.setPosition(LEFT_WRIST_SERVO_POSITION + WRIST_SERVO_INCREMENT);
             rightArmServo.setPosition(RIGHT_WRIST_SERVO_POSITION - WRIST_SERVO_INCREMENT);
-
+            leftGrab.setPosition(LEFT_FINGER_SERVO_POSITION);
+            rightGrab.setPosition(RIGHT_FINGER_SERVO_POSITION);
 
             if(shoulderPosition.equals(ArmShoulderPositions.INTAKE) && fingerPosition.equals(FingerPositions.ENTER_INTAKE) ){
                 leftGrab.setPosition(FingerPositions.INTAKE_READY.getLeftFingerPosition());

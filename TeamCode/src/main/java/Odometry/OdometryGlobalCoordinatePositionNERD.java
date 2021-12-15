@@ -239,6 +239,12 @@ public class OdometryGlobalCoordinatePositionNERD implements Runnable{
     public double returnYCoordinate(){ return robotGlobalYCoordinatePosition; }
 
     /**
+     * Returns the robot's vector heading as observed by Odometry
+     * @return global robot vector, in degrees
+     */
+    public double returnVectorByOdo(){ return robotVectorByOdoOpt; }
+
+    /**
      * Returns the robot's global orientation
      * @return global orientation, in degrees
      */

@@ -193,8 +193,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     double WristjoyY=0;
 
     public static double duckyDiskPowerNEW;
-//    public static double duckyDiskGain = 0.995;
-    public static double duckyDiskGain = 0.95;
+    public static double duckyDiskGain = 0.65;
     public static double duckyDiskSeedPower = 0.02;
 
     double propError = 0;
@@ -386,11 +385,6 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
                 joyX = 0.8;
                 joyY = 0.2;
             }
-            else if(gamepad1.left_bumper)
-            {
-                joyX = -0.8;
-                joyY = -0.2;
-            }
 
 
             //sets the current angle of the gyro to 0
@@ -452,7 +446,6 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
             if(gamepad2.left_bumper){
                 WRIST_SERVO_INCREMENT = 0.0;
                 shoulderPosition = ArmShoulderPositions.GROUND_PICKUP;
-                fingerPosition = FingerPositions.INTAKE_READY;
             }
 
             if(gamepad2.right_bumper){
@@ -513,27 +506,19 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 //                duckyDiskMotor.setPower(-duckyDiskpower);
 //            }
 //            else {
-//                duckyDiskMotor
-//            else {
-//                duckyDiskPowerNEW = duckyDiskSeedPower;
+//                duckyDiskMotor.setPower(0);
+//                duckyDiskpower = DUCK_DISK_STARTING_POWER;
 //            }
 
             if(gamepad1.x) {
                 duckyDiskPowerNEW = Math.pow(duckyDiskPowerNEW, duckyDiskGain);
             }
             else {
-                duckyDiskPowerNEW = duckyDiskSeedPower;
+                duckyDiskPowerNEW = -duckyDiskSeedPower;
             }
-
-            if(duckyDiskPowerNEW != duckyDiskSeedPower) {
-                duckyDiskMotor.setPower(-duckyDiskPowerNEW);
-            }
-            else {
-                duckyDiskMotor.setPower(0);
-            }
-
+            duckyDiskMotor.setPower(-duckyDiskPowerNEW);
             telemetry.addData("ducky disk power", duckyDiskPowerNEW)
-            ;            //Minor Wrist adjustments
+;            //Minor Wrist adjustments
             telemetry.update();
 
             double armPidOutput = 0.0;
