@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 public  enum ArmShoulderPositions {
 
     INTAKE(0,0.2,0.28,0.72),
-    LEVEL1(1100,0.4,0.28,0.72),
-    LEVEL2(830,0.3,0.53,0.47),
+    LEVEL1(1050,0.4,0.28,0.72),
+    LEVEL2(810,0.3,0.53,0.47),
     LEVEL3(600,0.3,0.7,0.3),
     TSE_DROP(600,0.3,0.62,0.38),
     GROUND_PICKUP(1100,0.3,0.43,0.57),

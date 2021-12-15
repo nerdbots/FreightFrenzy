@@ -189,9 +189,9 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
     //For TURN PID
 
     boolean onTarget = false;
-    public static double turnPIDKp = 0.015;
+    public static double turnPIDKp = 0.015; //0.015
     public static double turnPIDKi = 0.0006;
-    public static double turnPIDKd = 0.001;
+    public static double turnPIDKd = 0.001; //0.001 //0.002
 
     public static double turnPIDpropError = 0;
     public static double turnPIDintError = 0;
@@ -1331,6 +1331,12 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
     }
 
+    public boolean checkIfBlockIsIn(){
+        boolean blockIsIn = false;
+        if(colorSensor.alpha() > 200) blockIsIn = true;
+        return  blockIsIn;
+    }
+
 
     public void runMotor(String motor, double power, double timeInSeconds){
 
@@ -1554,7 +1560,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             turnPIDintError = 0;
         }
         else    {
-            turnPIDmotorPower = Range.clip(turnPIDpropError * turnPIDKp + turnPIDintError * turnPIDKi + turnPIDderError * turnPIDKd, -0.3, 0.3);
+            turnPIDmotorPower = Range.clip(turnPIDpropError * turnPIDKp + turnPIDintError * turnPIDKi + turnPIDderError * turnPIDKd, -0.9, 0.9);
         }
 
 

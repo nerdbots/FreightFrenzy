@@ -69,12 +69,12 @@ public class Auton_RED_DuckSide_Multithread_TwoBlock_V2 extends LinearOpMode {
 
         if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.CENTER)) {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
-            armDelay=0.5;
+            armDelay=0.7;
             shippingHubPark = 22;
         }
         else if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.LEFT)){
             shoulderPosition = ArmShoulderPositions.LEVEL1;
-            armDelay=0.5;
+            armDelay=0.7;
             shippingHubPark = 25;
         }
         else if(duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.RIGHT)){
@@ -91,7 +91,7 @@ public class Auton_RED_DuckSide_Multithread_TwoBlock_V2 extends LinearOpMode {
             allPoints.add(new CurvePoint(8, shippingHubPark, 0.4, 0.3, 25, 180, 0.3));
             allPoints.add(new CurvePoint(80, 80, 0.4, 0.3, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.0,0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 10, 270, 3, ArmShoulderPositions.INTAKE, shoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0,0,"none", 0);
 
             myPurePursuitRobotMovement6_Turn_Multithread.turnRobot(235);
 
@@ -106,7 +106,7 @@ public class Auton_RED_DuckSide_Multithread_TwoBlock_V2 extends LinearOpMode {
             allPoints.add(new CurvePoint(-28, 7, 0.4, 0.4, 25, 180, 0.3));
             allPoints.add(new CurvePoint(-60, 0, 0.4, 0.4, 25, 180, 0.3));
 
-            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 10, 150, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0, 0,"none", 0);
+            myPurePursuitRobotMovement6_Turn_Multithread.followCurveArm_V2(allPoints, 0, 10, 150, 3, shoulderPosition,ArmShoulderPositions.INTAKE, FingerPositions.ENTER_INTAKE, FingerPositions.ENTER_INTAKE,0.7, 0,"none", 0);
 
             myPurePursuitRobotMovement6_Turn_Multithread.runMotor("duckyDisc",0.8,4);
 
