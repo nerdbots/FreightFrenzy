@@ -140,7 +140,7 @@ public class Auton_RED_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
             allPoints.add(new CurvePoint(28, 0, 0.8, 0.3, 25, 180, 0));
             allPoints.add(new CurvePoint(28, -50, 0.8, 0.3, 25, 180, 0));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 10, 0, 6,
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 20, 0, 6,
                     ArmShoulderPositions.INTAKE,ArmShoulderPositions.INTAKE, FingerPositions.GRAB, FingerPositions.GRAB,0.7, 0,"none", 0);
 
 
@@ -182,7 +182,7 @@ public class Auton_RED_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
             allPoints.add(new CurvePoint(28, 0, 0.8, 0.3, 25, 180, 0));
             allPoints.add(new CurvePoint(28, -50, 0.8, 0.3, 25, 180, 0));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 10, 0, 6,
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 20, 0, 6,
                     ArmShoulderPositions.INTAKE,ArmShoulderPositions.INTAKE, FingerPositions.GRAB, FingerPositions.GRAB,0.7, 0,"none", 0);
 
 
