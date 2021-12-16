@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import treamcode.CurvePoint;
 
 
-@Autonomous(name="BLUE_WarehouseSide_MultiBlock", group="Linear Opmode")
+@Autonomous(name="BLUE_WarehouseSide_3Block", group="Linear Opmode")
 
 public class Auton_BLUE_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
 

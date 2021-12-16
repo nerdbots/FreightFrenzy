@@ -1358,6 +1358,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             motorRunTime = elapsedTime.seconds() - motorStarTime;
         }
         currentMotor.setPower(0.0);
+        runDriveMotors(0);
 
     }
 

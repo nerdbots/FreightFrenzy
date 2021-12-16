@@ -149,7 +149,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     double mult = 1; //this controls how fast the robot will move; decrease it to decrease it's speed
     double multZ = 0.6;//this controls how fast the robot will turn; decrease it to decrease it's turn speed (or increase it to increase that. It likely wont work past one)
 
-    double joyX = 0;
+    double joyX = 1;
     double joyY = 0;
 
 
@@ -787,7 +787,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
         if (Math.sqrt(zMag) > 0.5) {
             //11_09
 //            ZTar = Math.atan2(-Xmath, -Ymath) * 180 / 3.14159;
-            ZTar = Math.atan2(-Xmath, -Ymath) * 180 / 3.14159 - 90;
+            ZTar = Math.atan2(-Xmath, -Ymath) * 180 / 3.14159 + 90;
 
         }
 
@@ -803,7 +803,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
         //more complicated math I barely understand. If the drivetrain angle changes, play around with this number.
         // 11_09
 //        CA = (Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) * 180 / 3.14) + 45;
-        CA = (Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) * 180 / 3.14 - 45);
+        CA = (Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) * 180 / 3.14 + 135);
 
 
         RSA = (CA - getAngle()) * 3.14 / 180;
