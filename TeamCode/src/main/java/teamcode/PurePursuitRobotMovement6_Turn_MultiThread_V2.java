@@ -902,8 +902,8 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
             }
 
             if (debugFlag) {
-                RobotLog.d("followCurveArm_V2 - runTime %f, deltaTime %f, pathSegment1Length %f, distanceToPoint %f, distanceFromPoint %f, distanceFromPointPath %f, pL %d",
-                        currentTime, deltaTime, pathSegment1Length, distanceToPoint, distanceFromPoint, distanceFromPointPath, pL);
+                RobotLog.d("followCurveArm_V2 - runTime %f, deltaTime %f, pathSegment1Length %f, distanceToPoint %f, distanceFromPoint %f, distanceFromPointPath %f, pL %d, distanceToEndPark %f, distanceToPark %f",
+                        currentTime, deltaTime, pathSegment1Length, distanceToPoint, distanceFromPoint, distanceFromPointPath, pL, distanceToEndPoint, distanceToPark);
             }
 
             if(distanceToEndPoint < distanceToPark){
@@ -1180,7 +1180,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
         if (debugFlag) {
             RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, segmentStartAngle %f, segmentEndAngle %f, segmentLength %f, distToPoint %f, robotFaceAngle %f, robotAngle %f, pL %d, pLf %d",
-                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, segmentStartAngle, segmentEndAngle, segmentLength, distToPoint, robotFaceAngle, zPIDAngle, pL, pLf);
+                    currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, segmentStartAngle, segmentEndAngle, segmentLength, distToPoint, robotFaceAngle, zPIDAngle, pL, pLf, parkDistance);
         }
 
 
@@ -1599,6 +1599,10 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         oldTimeArm = 0;
         deltaTimeArm = 0;
         startTimeArm = 0;
+    }
+
+    public void resetColorSensor(){
+        colorSensor.resetDeviceConfigurationForOpMode();
     }
 
 

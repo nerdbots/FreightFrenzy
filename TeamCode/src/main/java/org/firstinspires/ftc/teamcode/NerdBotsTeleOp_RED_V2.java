@@ -193,7 +193,6 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     double WristjoyY=0;
 
     public static double duckyDiskPowerNEW;
-//    public static double duckyDiskGain = 0.995;
     public static double duckyDiskGain = 0.95;
     public static double duckyDiskSeedPower = 0.02;
 
@@ -386,11 +385,6 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
                 joyX = 0.8;
                 joyY = 0.2;
             }
-            else if(gamepad1.left_bumper)
-            {
-                joyX = -0.8;
-                joyY = -0.2;
-            }
 
 
             //sets the current angle of the gyro to 0
@@ -477,6 +471,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 //                if(previousShoulderPosition.equals(ArmShoulderPositions.INTAKE)) {
 //                    HOME_MAX_POWER = 0.1;
 //                }
+                fingerPosition = FingerPositions.GRAB;
                 shoulderPosition = ArmShoulderPositions.HOME;
 
             }
@@ -513,9 +508,8 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
 //                duckyDiskMotor.setPower(-duckyDiskpower);
 //            }
 //            else {
-//                duckyDiskMotor
-//            else {
-//                duckyDiskPowerNEW = duckyDiskSeedPower;
+//                duckyDiskMotor.setPower(0);
+//                duckyDiskpower = DUCK_DISK_STARTING_POWER;
 //            }
 
             if(gamepad1.x) {

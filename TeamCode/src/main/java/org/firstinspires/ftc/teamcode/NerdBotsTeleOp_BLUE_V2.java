@@ -485,6 +485,7 @@ public class NerdBotsTeleOp_BLUE_V2 extends LinearOpMode {
 //                if(previousShoulderPosition.equals(ArmShoulderPositions.INTAKE)) {
 //                    HOME_MAX_POWER = 0.1;
 //                }
+                fingerPosition = FingerPositions.GRAB;
                 shoulderPosition = ArmShoulderPositions.HOME;
 
             }

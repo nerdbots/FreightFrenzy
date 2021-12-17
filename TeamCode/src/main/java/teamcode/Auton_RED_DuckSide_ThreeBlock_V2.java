@@ -60,6 +60,8 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
 
         waitForStart();
 
+//        myPurePursuitRobotMovement6_Turn_MultiThread.resetColorSensor();
+
         OpmodeTimer.reset();
 
         myPurePursuitRobotMovement6_Turn_MultiThread.startOdometryThread();
@@ -96,7 +98,7 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
             shpX = 8;
             shpY = 26;
             shpX2 = 34;
-            shpY2 = 29;
+            shpY2 = 26;
         }
         else if(duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.RIGHT)){
             shoulderPosition = ArmShoulderPositions.LEVEL3;
@@ -184,11 +186,11 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
             sleep(500);
 
             allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(85, 15, 0.6, 0.4, 25, 0, 0));
-            allPoints.add(new CurvePoint(85, -5, 0.6, 0.4, 25, 0, 0));
-            allPoints.add(new CurvePoint(85, -50, 0.6, 0.4, 25, 180, 0));
+            allPoints.add(new CurvePoint(79, 35, 0.6, 0.4, 25, 0, 0));
+            allPoints.add(new CurvePoint(79, -2, 0.6, 0.4, 25, 0, 0));
+            allPoints.add(new CurvePoint(79, -50, 0.6, 0.4, 25, 180, 0));
 
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 20, 0, 6,
+            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 20, 0, 7,
                     ArmShoulderPositions.INTAKE, nextShoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.7, 0,"none", 0);
 
 
@@ -205,7 +207,7 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
                 allPoints.add(new CurvePoint(52, -7, 0.8, 0.3, 25, 180, 0));
                 allPoints.add(new CurvePoint(42, -7, 0.8, 0.3, 25, 180, 0));
                 allPoints.add(new CurvePoint(32, 15, 0.8, 0.3, 25, 180, -40));
-                allPoints.add(new CurvePoint(34, 25, 0.8, 0.3, 25, 180, -40));
+                allPoints.add(new CurvePoint(34, 27, 0.8, 0.3, 25, 180, -40));
                 allPoints.add(new CurvePoint(34, 78, 0.8, 0.3, 25, 180, -40));
 
                 myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 15, -40, 2,
@@ -231,7 +233,7 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
             }else{
                 allPoints = new ArrayList<>();
                 allPoints.add(new CurvePoint(75, -2, 0.6, 0.4, 25, 180, 0));
-                allPoints.add(new CurvePoint(81, 3, 0.6, 0.4, 25, 180, 0));
+                allPoints.add(new CurvePoint(75, 3, 0.6, 0.4, 25, 180, 0));
                 allPoints.add(new CurvePoint(115, 3, 0.6, 0.4, 25, 180, 0));
 
                 myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 5, 0, 5,
