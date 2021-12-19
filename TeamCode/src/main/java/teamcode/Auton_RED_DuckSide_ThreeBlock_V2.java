@@ -147,7 +147,7 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
             myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 35, 0, 6,
                     ArmShoulderPositions.INTAKE, ArmShoulderPositions.INTAKE, FingerPositions.INTAKE_READY, FingerPositions.INTAKE_READY, 0, 0, "intake",-0.85);
 
-            sleep(500);
+            sleep(300);
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(30, -2, 0.3, 0.3, 20, 0, 0));
@@ -185,13 +185,13 @@ public class Auton_RED_DuckSide_ThreeBlock_V2 extends LinearOpMode {
 
             sleep(500);
 
-            allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(79, 35, 0.6, 0.4, 25, 0, 0));
-            allPoints.add(new CurvePoint(79, -2, 0.6, 0.4, 25, 0, 0));
-            allPoints.add(new CurvePoint(79, -50, 0.6, 0.4, 25, 180, 0));
-
-            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 20, 0, 7,
-                    ArmShoulderPositions.INTAKE, nextShoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.7, 0,"none", 0);
+//            allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(79, 15, 0.6, 0.4, 25, 0, 0));
+//            allPoints.add(new CurvePoint(79, 2, 0.6, 0.4, 25, 0, 0));
+//            allPoints.add(new CurvePoint(79, -50, 0.6, 0.4, 25, 180, 0));
+//
+//            myPurePursuitRobotMovement6_Turn_MultiThread.followCurveArm_V2(allPoints, 0, 20, 0, 7,
+//                    ArmShoulderPositions.INTAKE, nextShoulderPosition, FingerPositions.GRAB, FingerPositions.GRAB,0.7, 0,"none", 0);
 
 
             if (timeCheckCount < 1){

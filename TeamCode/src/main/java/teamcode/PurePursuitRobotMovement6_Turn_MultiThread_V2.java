@@ -873,6 +873,11 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
 
             distanceToEndPoint = Math.hypot(endPoint.x - robotXMultiThread, endPoint.y - robotYMultiThread);
 
+            if (debugFlag) {
+                RobotLog.d("distanceToEndPoint- runTime %f, deltaTime %f, distanceToEndPoint %f, robotXMultiThread %f, robotYMultiThread %f, endPointx %f, pL %d, endPointy %f, distanceToPark %f",
+                        currentTime, deltaTime, distanceToEndPoint, robotXMultiThread, robotYMultiThread, endPoint.x, pL, endPoint.y, distanceToPark);
+            }
+
             CurvePoint startSegment1 = allPoints.get(pL);
             CurvePoint endSegment1 = allPoints.get(pL + 1);
 
@@ -1179,7 +1184,7 @@ public class PurePursuitRobotMovement6_Turn_MultiThread_V2 {
         rearLeftMotor.setPower(motorSpeedCommand[2]);
 
         if (debugFlag) {
-            RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, segmentStartAngle %f, segmentEndAngle %f, segmentLength %f, distToPoint %f, robotFaceAngle %f, robotAngle %f, pL %d, pLf %d",
+            RobotLog.d("goToPositionPP - runTime %f, deltaTime %f, robotLocationX %f, robotLocationY %f, segmentStartAngle %f, segmentEndAngle %f, segmentLength %f, distToPoint %f, robotFaceAngle %f, robotAngle %f, pL %d, pLf %d, parkDistance %f",
                     currentTime, deltaTime, robotLocationMT.x, robotLocationMT.y, segmentStartAngle, segmentEndAngle, segmentLength, distToPoint, robotFaceAngle, zPIDAngle, pL, pLf, parkDistance);
         }
 

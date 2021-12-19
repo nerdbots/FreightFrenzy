@@ -81,8 +81,10 @@ public class Auton_BLUE_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
             shoulderPosition = ArmShoulderPositions.LEVEL2;
             armDelay=0.5;
             shippingHubPark = 25;
-            shpX = 2;
-            shpY = 27;
+//            shpX = 2;
+//            shpY = 27;
+            shpX = 4;
+            shpY = 24;
         }
         else if (duckPosition.equals(DuckDetector.DuckDeterminationPipeline.DuckPosition.LEFT)){
             shoulderPosition = ArmShoulderPositions.LEVEL1;
@@ -116,8 +118,8 @@ public class Auton_BLUE_WareHouseSide_MultiBlock_V2 extends LinearOpMode {
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(shpX, shpY, 0.8, 0.3, 20, 180, 225));
             allPoints.add(new CurvePoint(5, -4, 0.6, 0.3, 20, 180, 180));
-            allPoints.add(new CurvePoint(0, -12, 0.6, 0.3, 20, 180, 180));
-            allPoints.add(new CurvePoint(-10, -8, 0.6, 0.3, 20, 180, 180));
+            allPoints.add(new CurvePoint(0, -10, 0.6, 0.3, 20, 180, 180));
+            allPoints.add(new CurvePoint(-10, -6, 0.6, 0.3, 20, 180, 180));
             allPoints.add(new CurvePoint(-20, -2, 0.6, 0.3, 25, 180, 180));
             allPoints.add(new CurvePoint(-35, 0, 0.6, 0.3, 25, 180, 180));
             allPoints.add(new CurvePoint(-70, 0, 0.6, 0.3, 25, 180, 180));

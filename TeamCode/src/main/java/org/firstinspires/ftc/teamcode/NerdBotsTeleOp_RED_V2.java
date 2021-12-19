@@ -193,7 +193,7 @@ public class NerdBotsTeleOp_RED_V2 extends LinearOpMode {
     double WristjoyY=0;
 
     public static double duckyDiskPowerNEW;
-    public static double duckyDiskGain = 0.95;
+    public static double duckyDiskGain = 0.92;
     public static double duckyDiskSeedPower = 0.02;
 
     double propError = 0;

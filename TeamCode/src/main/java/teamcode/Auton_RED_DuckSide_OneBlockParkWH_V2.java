@@ -110,6 +110,8 @@ public class Auton_RED_DuckSide_OneBlockParkWH_V2 extends LinearOpMode {
 
         if (purePursuitPath == 1){
 
+            sleep(2000);
+
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(0, 0, 0.4, 0.3, 25, 0, 90));
             allPoints.add(new CurvePoint(0, 20, 0.4, 0.3, 25, 180, 225));
@@ -134,7 +136,7 @@ public class Auton_RED_DuckSide_OneBlockParkWH_V2 extends LinearOpMode {
 
             myPurePursuitRobotMovement6_Turn_MultiThread.runMotor("duckyDisc",0.35,3.75);
 
-            sleep(12000);
+            sleep(10000);
 
             allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint(-28, 7, 0.8, 0.3, 25, 0, 160));
